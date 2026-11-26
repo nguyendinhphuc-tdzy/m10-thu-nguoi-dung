@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hình động: 10 đối tác lớn nhất của Việt Nam, 2004–2024</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#222;--muted:#666;--faint:#999;--grid:#E5E5E5;--axis:#BBB;--accent:#1f4e79;--accent-soft:#e8f0f8;--line:#d5dbe3;
+  --font:"Be Vietnam Pro","Segoe UI",Arial,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5}
+main{max-width:1040px;margin:0 auto;padding:22px 24px 28px}
+.eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+h1{font-size:1.45rem;line-height:1.3;margin:0 0 6px;font-weight:700}
+.dek{color:var(--muted);margin:0 0 16px;max-width:760px}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;margin:0 0 12px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{font:inherit;font-size:.92rem;padding:7px 14px;border:0;background:#fff;color:var(--ink);cursor:pointer}
+.seg button + button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:600}
+.play{font:inherit;font-size:.92rem;font-weight:600;padding:7px 16px;border-radius:10px;border:1.5px solid var(--accent);background:#fff;color:var(--accent);cursor:pointer;min-width:96px}
+.play[aria-pressed="true"]{background:var(--accent);color:#fff}
+.slider{display:flex;align-items:center;gap:10px;flex:1;min-width:260px}
+.slider input{flex:1;accent-color:var(--accent)}
+.slider output{font-variant-numeric:tabular-nums;font-weight:700;min-width:40px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--muted);margin:2px 0 10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.source{font-size:.78rem;color:var(--muted);margin-top:12px;border-top:1px solid var(--grid);padding-top:8px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* Biểu đồ thanh chạy theo năm: mỗi nước một hàng, hàng trượt lên xuống theo thứ hạng */
+.chart{position:relative;margin-top:4px}
+.axis{position:relative;height:22px;margin-left:var(--lab);margin-right:var(--val)}
+.axis span{position:absolute;top:0;transform:translateX(-50%);font-size:.76rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.plot{position:relative;height:calc(10 * var(--row))}
+.grid{position:absolute;top:0;bottom:0;left:var(--lab);right:var(--val);pointer-events:none}
+.grid i{position:absolute;top:0;bottom:0;width:1px;background:var(--grid)}
+.grid i.zero{background:var(--axis)}
+.row{position:absolute;left:0;right:0;height:var(--row);display:flex;align-items:center;transition:transform .7s ease,opacity .5s ease;will-change:transform}
+.row .lab{width:var(--lab);flex:none;text-align:right;padding-right:10px;font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .track{position:relative;flex:1;height:calc(var(--row) - 10px);margin-right:var(--val)}
+.row .bar{position:absolute;left:0;top:0;bottom:0;border-radius:0 4px 4px 0;transition:width .7s ease}
+.row .val{position:absolute;top:50%;transform:translateY(-50%);padding-left:6px;font-size:.84rem;font-variant-numeric:tabular-nums;white-space:nowrap;transition:left .7s ease}
+.year{position:absolute;right:calc(var(--val) + 4px);bottom:6px;font-size:4.2rem;font-weight:700;color:#d9dde3;line-height:1;pointer-events:none;font-variant-numeric:tabular-nums}
+:root{--lab:150px;--val:64px;--row:38px}
+@media (max-width:700px){:root{--lab:110px;--val:56px;--row:32px}.year{font-size:3rem}}
+@media (prefers-reduced-motion: reduce){.row,.row .bar,.row .val{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">P03 · Made in…? · Nhóm 02 · Hình động</p>
+  <h1>10 đối tác thương mại lớn nhất của Việt Nam, 2004–2024</h1>
+  <p class="dek">Mỗi thanh là phần trăm của một nước trong tổng xuất khẩu (Việt Nam bán cho ai) hoặc tổng nhập khẩu (Việt Nam mua của ai). Bấm <b>Chạy</b> để xem từng năm, hoặc kéo thanh năm.</p>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Chiều thương mại">
+      <button type="button" data-flow="X" aria-pressed="true">Xuất khẩu</button>
+      <button type="button" data-flow="M" aria-pressed="false">Nhập khẩu</button>
+    </div>
+    <button type="button" class="play" id="play" aria-pressed="false">▶ Chạy</button>
+    <label class="slider"><span class="small">Năm</span><input type="range" id="yr" min="2004" max="2024" step="1" value="2004" aria-label="Chọn năm"><output id="yrout">2004</output></label>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="chart" aria-live="polite">
+    <div class="axis" id="axis"></div>
+    <div class="plot" id="plot"><div class="grid" id="grid"></div><div class="year" id="bigyear">2004</div></div>
+  </div>
+  <p class="source">Thang cố định 0–45% cho mọi năm, để thanh của các năm so được với nhau. Nguồn: CEPII BACI HS02 V202601 (bảng partner_year.csv của Nhóm 02); tỷ trọng tính trên giá trị USD hiện hành. Màu theo nhóm đối tác; các nước ASEAN cùng một màu.</p>
+</main>
+<script>
+const D = {"years": [2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024], "top": {"X": {"2004": [["USA", 18.566], ["JPN", 13.215], ["CHN", 9.258], ["AUS", 5.798], ["DEU", 5.274], ["GBR", 5.161], ["SGP", 4.384], ["FRA", 3.474], ["BEL", 2.46], ["KOR", 2.336]], "2005": [["USA", 19.203], ["JPN", 12.731], ["CHN", 7.456], ["AUS", 6.836], ["DEU", 4.744], ["SGP", 4.608], ["GBR", 4.379], ["FRA", 3.211], ["THA", 3.046], ["MYS", 2.711]], "2006": [["USA", 20.615], ["JPN", 11.997], ["AUS", 8.187], ["CHN", 5.812], ["DEU", 4.782], ["GBR", 3.744], ["SGP", 3.415], ["FRA", 3.251], ["MYS", 3.114], ["THA", 2.641]], "2007": [["USA", 21.269], ["JPN", 11.754], ["AUS", 6.816], ["CHN", 6.209], ["DEU", 5.201], ["SGP", 3.777], ["GBR", 3.583], ["MYS", 3.377], ["FRA", 3.1], ["KOR", 2.615]], "2008": [["USA", 19.164], ["JPN", 12.628], ["CHN", 6.279], ["AUS", 5.93], ["DEU", 4.783], ["SGP", 3.435], ["MYS", 3.316], ["GBR", 3.017], ["KOR", 2.889], ["PHL", 2.787]], "2009": [["USA", 19.73], ["JPN", 10.709], ["CHN", 7.348], ["CHE", 4.88], ["DEU", 4.485], ["AUS", 3.94], ["KOR", 3.563], ["MYS", 3.129], ["SGP", 2.986], ["GBR", 2.844]], "2010": [["USA", 20.079], ["JPN", 10.554], ["CHN", 8.93], ["DEU", 4.844], ["KOR", 4.104], ["AUS", 3.765], ["MYS", 3.122], ["GBR", 2.753], ["HKG", 2.469], ["FRA", 2.41]], "2011": [["USA", 17.965], ["JPN", 10.901], ["CHN", 10.487], ["DEU", 5.256], ["KOR", 4.823], ["MYS", 3.242], ["GBR", 3.012], ["AUS", 2.829], ["FRA", 2.609], ["HKG", 2.537]], "2012": [["USA", 16.485], ["JPN", 11.323], ["CHN", 11.27], ["DEU", 4.865], ["KOR", 4.596], ["MYS", 4.533], ["HKG", 3.372], ["GBR", 2.951], ["FRA", 2.617], ["AUS", 2.383]], "2013": [["USA", 17.231], ["CHN", 10.841], ["JPN", 9.502], ["KOR", 4.76], ["DEU", 4.712], ["MYS", 3.925], ["HKG", 3.269], ["GBR", 3.039], ["FRA", 2.447], ["AUS", 2.37]], "2014": [["USA", 18.826], ["CHN", 11.281], ["JPN", 9.168], ["KOR", 4.733], ["DEU", 4.546], ["HKG", 3.201], ["MYS", 2.742], ["AUS", 2.57], ["GBR", 2.409], ["FRA", 2.392]], "2015": [["USA", 21.047], ["CHN", 11.138], ["JPN", 8.167], ["KOR", 5.166], ["DEU", 4.7], ["HKG", 2.924], ["GBR", 2.635], ["NLD", 2.575], ["MYS", 2.528], ["FRA", 2.396]], "2016": [["USA", 20.615], ["CHN", 12.893], ["JPN", 7.781], ["KOR", 5.874], ["DEU", 4.585], ["HKG", 3.336], ["NLD", 3.0], ["GBR", 2.462], ["FRA", 2.372], ["MYS", 2.143]], "2017": [["USA", 18.902], ["CHN", 14.986], ["JPN", 7.276], ["KOR", 6.213], ["DEU", 4.193], ["ARE", 3.68], ["HKG", 3.112], ["NLD", 2.31], ["FRA", 2.278], ["GBR", 2.191]], "2018": [["USA", 17.814], ["CHN", 16.947], ["JPN", 7.469], ["KOR", 6.924], ["DEU", 3.931], ["HKG", 2.939], ["ARE", 2.662], ["IND", 2.635], ["FRA", 2.253], ["GBR", 2.133]], "2019": [["USA", 21.451], ["CHN", 16.766], ["JPN", 7.109], ["KOR", 6.743], ["DEU", 3.298], ["HKG", 3.098], ["IND", 2.388], ["ARE", 2.249], ["NLD", 2.121], ["FRA", 1.969]], "2020": [["USA", 23.664], ["CHN", 19.505], ["JPN", 6.401], ["KOR", 6.069], ["HKG", 4.947], ["DEU", 3.298], ["NLD", 2.101], ["CAN", 1.771], ["ARE", 1.691], ["IND", 1.677]], "2021": [["USA", 25.918], ["CHN", 19.043], ["KOR", 6.016], ["JPN", 5.715], ["HKG", 3.699], ["DEU", 2.998], ["CAN", 1.938], ["ARE", 1.853], ["MEX", 1.827], ["IND", 1.767]], "2022": [["USA", 28.738], ["CHN", 16.679], ["KOR", 5.943], ["JPN", 5.841], ["HKG", 3.329], ["DEU", 3.317], ["CAN", 2.156], ["GBR", 1.976], ["IND", 1.924], ["NLD", 1.819]], "2023": [["USA", 26.026], ["CHN", 16.47], ["KOR", 5.914], ["JPN", 5.756], ["HKG", 3.67], ["DEU", 3.154], ["ARE", 2.36], ["IND", 2.202], ["CAN", 2.183], ["MEX", 2.089]], "2024": [["USA", 27.809], ["CHN", 18.613], ["KOR", 5.63], ["JPN", 5.241], ["HKG", 4.164], ["DEU", 3.058], ["MEX", 2.616], ["GBR", 2.139], ["IND", 2.108], ["CAN", 2.049]]}, "M": {"2004": [["CHN", 13.297], ["TWN", 11.417], ["JPN", 10.885], ["SGP", 10.757], ["KOR", 10.472], ["THA", 5.953], ["MYS", 4.01], ["USA", 3.661], ["HKG", 3.303], ["DEU", 3.028]], "2005": [["CHN", 15.092], ["TWN", 11.696], ["SGP", 11.197], ["JPN", 10.831], ["KOR", 10.046], ["THA", 7.188], ["MYS", 3.774], ["HKG", 3.577], ["USA", 2.485], ["CHE", 2.229]], "2006": [["CHN", 16.014], ["SGP", 12.748], ["TWN", 10.621], ["JPN", 9.839], ["KOR", 8.881], ["THA", 7.186], ["MYS", 4.06], ["AUS", 3.443], ["HKG", 3.394], ["CHE", 2.785]], "2007": [["CHN", 18.508], ["SGP", 11.401], ["TWN", 10.798], ["JPN", 9.435], ["KOR", 9.139], ["THA", 6.278], ["MYS", 3.655], ["HKG", 3.281], ["USA", 2.821], ["DEU", 2.742]], "2008": [["CHN", 17.817], ["SGP", 10.938], ["TWN", 10.455], ["JPN", 10.002], ["KOR", 9.446], ["THA", 6.371], ["HKG", 3.789], ["USA", 3.569], ["MYS", 3.224], ["IND", 2.781]], "2009": [["CHN", 21.52], ["KOR", 10.345], ["JPN", 9.788], ["TWN", 8.837], ["THA", 6.655], ["SGP", 6.404], ["USA", 4.349], ["MYS", 3.512], ["HKG", 2.922], ["IND", 2.794]], "2010": [["CHN", 22.611], ["KOR", 11.171], ["JPN", 9.771], ["TWN", 8.302], ["THA", 6.456], ["SGP", 5.354], ["USA", 4.389], ["MYS", 4.107], ["HKG", 2.733], ["IND", 2.559]], "2011": [["CHN", 21.781], ["KOR", 12.199], ["JPN", 9.047], ["TWN", 7.982], ["SGP", 6.114], ["THA", 5.987], ["USA", 4.117], ["MYS", 3.544], ["HKG", 3.05], ["IND", 2.856]], "2012": [["CHN", 25.038], ["KOR", 12.608], ["JPN", 9.236], ["TWN", 6.991], ["SGP", 6.903], ["THA", 5.044], ["USA", 4.246], ["MYS", 3.265], ["HKG", 2.624], ["IND", 2.498]], "2013": [["CHN", 26.495], ["KOR", 14.82], ["JPN", 8.252], ["TWN", 6.882], ["THA", 4.907], ["SGP", 4.624], ["USA", 3.909], ["MYS", 3.063], ["IND", 2.864], ["HKG", 2.439]], "2014": [["CHN", 28.241], ["KOR", 13.759], ["JPN", 8.018], ["TWN", 7.103], ["SGP", 4.942], ["THA", 4.854], ["USA", 4.005], ["HKG", 3.093], ["MYS", 2.856], ["IND", 2.745]], "2015": [["CHN", 27.974], ["KOR", 15.553], ["JPN", 7.894], ["TWN", 6.207], ["THA", 5.094], ["USA", 4.584], ["SGP", 4.284], ["HKG", 3.342], ["MYS", 2.556], ["IND", 2.063]], "2016": [["CHN", 26.618], ["KOR", 17.661], ["JPN", 7.763], ["TWN", 6.296], ["THA", 5.065], ["USA", 4.817], ["SGP", 3.164], ["MYS", 3.026], ["HKG", 2.335], ["IND", 2.204]], "2017": [["CHN", 27.161], ["KOR", 19.65], ["JPN", 7.262], ["TWN", 5.826], ["THA", 5.1], ["USA", 4.175], ["SGP", 3.06], ["MYS", 2.863], ["IND", 2.465], ["DEU", 1.917]], "2018": [["CHN", 27.531], ["KOR", 19.011], ["JPN", 7.415], ["TWN", 5.399], ["THA", 5.252], ["USA", 5.008], ["MYS", 3.268], ["SGP", 2.391], ["IND", 2.149], ["IDN", 2.098]], "2019": [["CHN", 30.413], ["KOR", 17.882], ["JPN", 6.994], ["TWN", 5.707], ["USA", 5.263], ["THA", 4.673], ["MYS", 3.099], ["IDN", 2.298], ["IND", 2.202], ["SGP", 2.13]], "2020": [["CHN", 34.206], ["KOR", 17.886], ["JPN", 7.274], ["USA", 4.971], ["TWN", 4.415], ["THA", 4.352], ["MYS", 2.692], ["IDN", 2.133], ["SGP", 1.832], ["IND", 1.79]], "2021": [["CHN", 34.322], ["KOR", 17.303], ["JPN", 6.641], ["TWN", 4.555], ["THA", 4.023], ["USA", 3.577], ["MYS", 2.785], ["IDN", 2.415], ["AUS", 2.414], ["IND", 2.202]], "2022": [["CHN", 34.553], ["KOR", 17.263], ["JPN", 6.209], ["TWN", 5.935], ["THA", 3.982], ["USA", 3.877], ["AUS", 2.802], ["IDN", 2.676], ["MYS", 2.599], ["IND", 1.98]], "2023": [["CHN", 35.351], ["KOR", 16.106], ["JPN", 6.196], ["TWN", 5.194], ["USA", 4.002], ["THA", 3.636], ["IDN", 2.693], ["MYS", 2.674], ["AUS", 2.472], ["SGP", 1.915]], "2024": [["CHN", 42.133], ["KOR", 15.476], ["HKG", 5.228], ["SGP", 4.524], ["JPN", 4.208], ["TWN", 3.769], ["USA", 3.336], ["MYS", 3.121], ["THA", 3.121], ["IDN", 2.523]]}}, "series": {"X": {"AUS": [5.798, 6.836, 8.187, 6.816, 5.93, 3.94, 3.765, 2.829, 2.383, 2.37, 2.57, 1.776, 1.588, 1.584, 1.644, 1.376, 1.303, 1.357, 1.514, 1.505, 1.558], "CHN": [9.258, 7.456, 5.812, 6.209, 6.279, 7.348, 8.93, 10.487, 11.27, 10.841, 11.281, 11.138, 12.893, 14.986, 16.947, 16.766, 19.505, 19.043, 16.679, 16.47, 18.613], "JPN": [13.215, 12.731, 11.997, 11.754, 12.628, 10.709, 10.554, 10.901, 11.323, 9.502, 9.168, 8.167, 7.781, 7.276, 7.469, 7.109, 6.401, 5.715, 5.841, 5.756, 5.241], "KOR": [2.336, 2.187, 2.199, 2.615, 2.889, 3.563, 4.104, 4.823, 4.596, 4.76, 4.733, 5.166, 5.874, 6.213, 6.924, 6.743, 6.069, 6.016, 5.943, 5.914, 5.63], "USA": [18.566, 19.203, 20.615, 21.269, 19.164, 19.73, 20.079, 17.965, 16.485, 17.231, 18.826, 21.047, 20.615, 18.902, 17.814, 21.451, 23.664, 25.918, 28.738, 26.026, 27.809]}, "M": {"CHN": [13.297, 15.092, 16.014, 18.508, 17.817, 21.52, 22.611, 21.781, 25.038, 26.495, 28.241, 27.974, 26.618, 27.161, 27.531, 30.413, 34.206, 34.322, 34.553, 35.351, 42.133], "HKG": [3.303, 3.577, 3.394, 3.281, 3.789, 2.922, 2.733, 3.05, 2.624, 2.439, 3.093, 3.342, 2.335, 1.687, 1.661, 1.079, 0.714, 1.284, 0.849, 1.095, 5.228], "JPN": [10.885, 10.831, 9.839, 9.435, 10.002, 9.788, 9.771, 9.047, 9.236, 8.252, 8.018, 7.894, 7.763, 7.262, 7.415, 6.994, 7.274, 6.641, 6.209, 6.196, 4.208], "KOR": [10.472, 10.046, 8.881, 9.139, 9.446, 10.345, 11.171, 12.199, 12.608, 14.82, 13.759, 15.553, 17.661, 19.65, 19.011, 17.882, 17.886, 17.303, 17.263, 16.106, 15.476], "SGP": [10.757, 11.197, 12.748, 11.401, 10.938, 6.404, 5.354, 6.114, 6.903, 4.624, 4.942, 4.284, 3.164, 3.06, 2.391, 2.13, 1.832, 1.777, 1.738, 1.915, 4.524], "TWN": [11.417, 11.696, 10.621, 10.798, 10.455, 8.837, 8.302, 7.982, 6.991, 6.882, 7.103, 6.207, 6.296, 5.826, 5.399, 5.707, 4.415, 4.555, 5.935, 5.194, 3.769]}}, "names": {"USA": "Mỹ", "IND": "Ấn Độ", "FRA": "Pháp", "HKG": "Hồng Kông (TQ)", "NLD": "Hà Lan", "DEU": "Đức", "CHN": "Trung Quốc", "SGP": "Singapore", "CHE": "Thụy Sĩ", "BEL": "Bỉ", "ARE": "UAE", "KOR": "Hàn Quốc", "THA": "Thái Lan", "CAN": "Canada", "TWN": "Đài Loan", "PHL": "Philippines", "JPN": "Nhật Bản", "AUS": "Úc", "GBR": "Anh", "MYS": "Malaysia", "MEX": "Mexico", "IDN": "Indonesia"}, "groups": {"USA": "Mỹ", "IND": "Còn lại", "FRA": "EU", "HKG": "Còn lại", "NLD": "EU", "DEU": "EU", "CHN": "Trung Quốc", "SGP": "ASEAN", "CHE": "Còn lại", "BEL": "EU", "ARE": "Còn lại", "KOR": "Hàn Quốc", "THA": "ASEAN", "CAN": "Còn lại", "TWN": "Còn lại", "PHL": "ASEAN", "JPN": "Nhật Bản", "AUS": "Còn lại", "GBR": "Còn lại", "MYS": "ASEAN", "MEX": "Còn lại", "IDN": "ASEAN"}, "colors": {"Mỹ": "#004C97", "Trung Quốc": "#D55E00", "ASEAN": "#E69F00", "EU": "#009E73", "Hàn Quốc": "#CC79A7", "Nhật Bản": "#56B4E9", "Còn lại": "#BDBDBD"}};
+const MAX = 45, TICKS = [0, 10, 20, 30, 40], STEP_MS = 900;
+const fmt = v => v.toFixed(1).replace(".", ",") + "%";
+const color = iso => D.colors[D.groups[iso] || "Còn lại"];
+const $ = s => document.querySelector(s);
+let flow = "X", year = 2004, timer = null;
+
+$("#legend").innerHTML = Object.entries(D.colors).map(([g, c]) => `<span><i style="background:${c}"></i>${g}</span>`).join("");
+$("#axis").innerHTML = TICKS.map(t => `<span style="left:${t / MAX * 100}%">${t}%</span>`).join("");
+$("#grid").innerHTML = TICKS.map(t => `<i class="${t === 0 ? "zero" : ""}" style="left:${t / MAX * 100}%"></i>`).join("");
+
+const rows = {};   // một phần tử cho mỗi nước, giữ lại giữa các năm để trượt mượt
+function rowFor(iso){
+  if (rows[iso]) return rows[iso];
+  const r = document.createElement("div");
+  r.className = "row"; r.style.opacity = 0; r.style.transform = "translateY(" + (10 * rowH()) + "px)";
+  r.innerHTML = `<div class="lab"></div><div class="track"><div class="bar"></div><div class="val"></div></div>`;
+  r.querySelector(".lab").textContent = D.names[iso] || iso;
+  r.querySelector(".bar").style.background = color(iso);
+  $("#plot").appendChild(r);
+  return rows[iso] = r;
+}
+const rowH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--row"));
+
+function draw(){
+  const top = D.top[flow][String(year)];
+  const shown = new Set(top.map(d => d[0]));
+  top.forEach(([iso, v], i) => {
+    const r = rowFor(iso);
+    r.style.opacity = 1;
+    r.style.transform = `translateY(${i * rowH()}px)`;
+    const w = Math.min(v, MAX) / MAX * 100;
+    r.querySelector(".bar").style.width = w + "%";
+    const val = r.querySelector(".val"); val.textContent = fmt(v); val.style.left = w + "%";
+    r.querySelector(".lab").style.fontWeight = i < 2 ? 600 : 400;
+  });
+  Object.entries(rows).forEach(([iso, r]) => {
+    if (!shown.has(iso)){ r.style.opacity = 0; r.style.transform = `translateY(${10 * rowH()}px)`; r.querySelector(".bar").style.width = "0%"; }
+  });
+  $("#bigyear").textContent = year; $("#yrout").textContent = year; $("#yr").value = year;
+}
+
+function stop(){ clearInterval(timer); timer = null; $("#play").textContent = "▶ Chạy"; $("#play").setAttribute("aria-pressed", "false"); }
+function play(){
+  if (year >= 2024) year = 2003;
+  $("#play").textContent = "❚❚ Dừng"; $("#play").setAttribute("aria-pressed", "true");
+  const tick = () => { if (year >= 2024) return stop(); year++; draw(); };
+  tick(); timer = setInterval(tick, STEP_MS);
+}
+$("#play").addEventListener("click", () => timer ? stop() : play());
+$("#yr").addEventListener("input", e => { stop(); year = +e.target.value; draw(); });
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+  flow = b.dataset.flow;
+  document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+  Object.values(rows).forEach(r => r.remove()); for (const k in rows) delete rows[k];
+  draw();
+}));
+draw();
+</script>
+</body>
+</html>

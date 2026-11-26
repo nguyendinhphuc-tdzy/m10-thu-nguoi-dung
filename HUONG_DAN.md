@@ -5,7 +5,8 @@ P03 "Made in…?", Nhóm 02. Trang này là bản tự làm trên web của quy 
 | File | Vai trò |
 |---|---|
 | `index.html` | Trang người thử mở: phiếu đồng ý, sàng lọc, bài 5 giây, T1 đến T5, 3 câu hỏi cuối |
-| `scrolly.html` | Trang cuộn M9-04 (T1, T5) |
+| `anim.html` | Hình động 10 đối tác lớn nhất, 2004–2024 (T1, T5) |
+| `static.html` | Hình tĩnh: đường tỷ trọng các đối tác lớn, 2004–2024 (T5) |
 | `explorer.html` | Bản HTML của explorer M9-03 (T2 đến T5) |
 | `c3.png` | Hình C3, hình số 1 của Big Idea (bài 5 giây, T5) |
 | `Code.gs` | Apps Script nhận câu trả lời và ghi vào Google Sheet |

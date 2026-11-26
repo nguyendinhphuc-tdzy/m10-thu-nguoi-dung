@@ -90,18 +90,18 @@ textarea{min-height:84px;resize:vertical}
    Câu hỏi giống m10_protocol.md (tạo bởi notebooks/M10/07_evaluation_M10.ipynb).
    Trang không chứa đáp án; notebook chấm từ dữ liệu thô.
    ====================================================================== */
-const APP_VERSION = "m10-tu-lam-1.0 (26/11/2026)";
+const APP_VERSION = "m10-tu-lam-1.1 (26/11/2026)";
 /* URL ứng dụng web Apps Script (kết thúc bằng /exec). Để trống: chạy chế độ thử, không lưu. */
 const API_URL = "https://script.google.com/macros/s/AKfycbyBkc8syljltjsKrByMQ0Gqsc7a1ACgWZefSb28LmMAzYaf7D_agtUNp3ansEii78F1/exec";
 const COUNTRIES = ["Anh", "Argentina", "Ba Lan", "Brazil", "Campuchia", "Canada", "Hà Lan", "Hàn Quốc", "Hồng Kông (TQ)", "Indonesia", "Israel", "Italia", "Malaysia", "Mexico", "Mỹ", "Nhật Bản", "Philippines", "Pháp", "Singapore", "Séc", "Thái Lan", "Trung Quốc", "Úc", "Đài Loan", "Đức", "Ấn Độ"];
 const SECTIONS = [["I", "Động vật sống, sản phẩm động vật"], ["II", "Sản phẩm thực vật"], ["III", "Dầu mỡ động thực vật"], ["IV", "Thực phẩm chế biến, đồ uống, thuốc lá"], ["V", "Khoáng sản, nhiên liệu"], ["VI", "Hóa chất, mỹ phẩm, chất tẩy rửa"], ["VII", "Nhựa, cao su"], ["VIII", "Da, túi xách"], ["IX", "Gỗ, sản phẩm gỗ"], ["X", "Giấy, sách vở"], ["XI", "Dệt may"], ["XII", "Giày dép, mũ, ô dù"], ["XIII", "Đá, gốm, thủy tinh"], ["XIV", "Đá quý, kim loại quý"], ["XV", "Kim loại cơ bản"], ["XVI", "Máy móc, thiết bị điện, điện tử"], ["XVII", "Phương tiện vận tải"], ["XVIII", "Dụng cụ quang học, y tế, đồng hồ"], ["XIX", "Vũ khí"], ["XX", "Hàng chế tạo khác (đồ chơi, nội thất, văn phòng phẩm)"], ["XXI", "Tác phẩm nghệ thuật"]];
-const FILES = {scrolly:"scrolly.html", explorer:"explorer.html", c3:"c3.png"};
+const FILES = {anim:"anim.html", static:"static.html", explorer:"explorer.html", c3:"c3.png"};
 const LIMIT = 180, HINT_AFTER = 60, T5_SOFT = 300, FLASH_MS = 5000;
 
 const TASKS = [
-  {id:"T1", title:"Nhiệm vụ 1/4", left:["scrolly"],
-   q:"Mời bạn cuộn trang bên trái từ đầu đến cuối. Năm 2024, Việt Nam nhập khẩu nhiều nhất từ nước nào, và nước đó chiếm khoảng bao nhiêu phần trăm?",
-   hint:"Bạn thử cuộn tới phần Nhập khẩu, đoạn có năm 2024.", inputs:["country","number"]},
+  {id:"T1", title:"Nhiệm vụ 1/4", left:["anim"],
+   q:"Dùng hình bên trái. Năm 2024, Việt Nam nhập khẩu nhiều nhất từ nước nào, và nước đó chiếm khoảng bao nhiêu phần trăm?",
+   hint:"Bạn thử bấm nút Nhập khẩu, rồi kéo thanh năm đến 2024.", inputs:["country","number"]},
   {id:"T2", title:"Nhiệm vụ 2/4", left:["explorer"],
    q:"Dùng công cụ bên trái. Năm 2024, nhóm hàng máy móc, thiết bị điện, điện tử (nhóm XVI) được xuất khẩu nhiều nhất sang nước nào, và nước đó chiếm bao nhiêu phần trăm?",
    hint:"Bạn thử đổi ô Nhóm hàng, chọn năm 2024 và chiều Xuất khẩu.", inputs:["country","number"]},
@@ -112,9 +112,9 @@ const TASKS = [
    q:"Hãy tìm một nhóm hàng mà năm 2024 Việt Nam nhập khẩu hơn 80% từ một nước duy nhất. Đó là nhóm nào, nước nào?",
    hint:"Bạn thử chuyển chiều sang Nhập khẩu rồi đổi lần lượt các nhóm hàng.", inputs:["section","country"]},
 ];
-const T5 = {id:"T5", title:"Câu hỏi quyết định", left:["scrolly","explorer","c3"],
+const T5 = {id:"T5", title:"Câu hỏi quyết định", left:["anim","static","explorer","c3"],
   q:"Giả sử bạn là cán bộ xúc tiến thương mại và chỉ được chọn 1 tổ hợp nhóm hàng và thị trường để hỗ trợ doanh nghiệp năm tới. Bạn chọn tổ hợp nào? Hình nào giúp bạn quyết định?"};
-const LEFT_LABEL = {scrolly:"Trang cuộn", explorer:"Công cụ tra cứu", c3:"Biểu đồ cơ cấu xuất khẩu"};
+const LEFT_LABEL = {anim:"Hình động", static:"Hình tĩnh", explorer:"Công cụ tra cứu", c3:"Biểu đồ cơ cấu xuất khẩu"};
 const CHOICES_T3 = [["XVI","Nhóm XVI (máy móc, điện tử)"],["XX","Nhóm XX (đồ chơi, nội thất, văn phòng phẩm)"],["khong_biet","Không phân biệt được"]];
 const REASONS_T3 = [["hhi","Đường HHI"],["top1","Thanh của thị trường lớn nhất"],["n_partner","Số đối tác"],["khac","Khác"]];
 const METHODS = [["doc_hinh","Đọc trên hình hoặc công cụ"],["doan","Đoán"],["biet_truoc","Biết từ trước"]];
@@ -393,7 +393,7 @@ function runT5(){
   $("#text").hidden = true; $("#task").classList.add("on");
   const tabs = $("#tabs"); tabs.hidden = false;
   const frames = $("#frames"); frames.replaceChildren();
-  const used = new Set(["scrolly"]);
+  const used = new Set([T5.left[0]]);
   const panes = {};
   const show = k => {
     used.add(k);
@@ -402,7 +402,7 @@ function runT5(){
     [...tabs.children].forEach(b => b.setAttribute("aria-pressed", b.dataset.k === k ? "true" : "false"));
   };
   tabs.replaceChildren(...T5.left.map(k => h("button", {"data-k":k, onclick:() => show(k)}, LEFT_LABEL[k])));
-  show("scrolly");
+  show(T5.left[0]);
 
   const t0 = performance.now(), left0 = LEFT_PAGE;
   const timer = h("span", {class:"timer"}, "0:00");
@@ -416,7 +416,7 @@ function runT5(){
   $("#side").replaceChildren(
     h("div", {class:"top"}, h("span", {class:"pill"}, S.code), h("span", {}, T5.title), stopLink()),
     h("div", {class:"q"}, T5.q),
-    h("p", {class:"small muted"}, "Bấm các nút phía trên hình để chuyển giữa trang cuộn, công cụ tra cứu và biểu đồ. Câu này không có đáp án đúng."),
+    h("p", {class:"small muted"}, "Bấm các nút phía trên hình để chuyển giữa hình động, hình tĩnh, công cụ tra cứu và biểu đồ. Câu này không có đáp án đúng."),
     h("div", {class:"row small muted", style:"justify-content:space-between"}, h("span", {}, "Thời gian (gợi ý tối đa 5 phút)"), timer),
     h("label", {class:"field"}, h("span", {}, "Nhóm hàng bạn chọn"), sectionSelect("sec")),
     h("label", {class:"field"}, h("span", {}, "Thị trường bạn chọn"), ...countrySelect("c")),
