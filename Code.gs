@@ -5,7 +5,7 @@
  * Sheet tự tạo 3 trang tính: sessions (mỗi người một dòng), responses (mỗi nhiệm vụ một dòng), contacts (liên hệ, không gắn mã).
  * Trang không chứa đáp án; notebooks/M10/07_evaluation_M10.ipynb chấm từ trang tính responses.
  */
-const APP = "m10-tu-lam-1.0";
+const APP = "m10-tu-lam-2.0";
 /* Mã Google Sheet "M10_ket_qua_tu_lam" trong thư mục nhóm. Để trống nếu script gắn thẳng vào Sheet. */
 const SHEET_ID = "1Lpbam_YXJqjbnb-cUsGSzLyxQmdwicqw935v8q9jAU0";
 const SESS_COLS = ["user_id", "mode", "status", "started_at", "finished_at", "user_type", "seen_group_charts",
@@ -13,7 +13,7 @@ const SESS_COLS = ["user_id", "mode", "status", "started_at", "finished_at", "us
 const RESP_COLS = ["user_id", "mode", "user_type", "task_id", "answer_country", "answer_country_other", "answer_section",
   "answer_number", "answer_choice", "answer_reason", "answer_text", "method", "difficulty", "hints", "hint_at_s",
   "seconds", "load_s", "timed_out", "skipped", "left_page", "charts_used", "app_version", "saved_at"];
-const TASK_IDS = ["F5", "T1", "T2", "T3", "T4", "T5"];
+const TASK_IDS = ["F5", "T1", "T2", "T3", "T4", "T5", "T6", "R"];
 
 /** Nhận dữ liệu từ trang chạy trên GitHub Pages: body JSON {fn, args}. Chỉ cho gọi các hàm dưới đây. */
 const API_FNS = {startSession: startSession, logIneligible: logIneligible, saveSession: saveSession,
@@ -89,7 +89,7 @@ function logIneligible(meta) {
   }
 }
 
-/** Lưu 6 dòng (F5, T1 đến T5) một lần khi người thử bấm Gửi. Từ chối nếu mã không có hoặc đã lưu. */
+/** Lưu 8 dòng (F5, T1 đến T6, R) một lần khi người thử bấm Gửi. Từ chối nếu mã không có hoặc đã lưu. */
 function saveSession(code, rows, fin) {
   const lock = LockService.getScriptLock();
   lock.waitLock(20000);

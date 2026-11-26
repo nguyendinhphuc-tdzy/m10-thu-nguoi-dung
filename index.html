@@ -90,33 +90,41 @@ textarea{min-height:84px;resize:vertical}
    Câu hỏi giống m10_protocol.md (tạo bởi notebooks/M10/07_evaluation_M10.ipynb).
    Trang không chứa đáp án; notebook chấm từ dữ liệu thô.
    ====================================================================== */
-const APP_VERSION = "m10-tu-lam-1.1 (26/11/2026)";
+const APP_VERSION = "m10-tu-lam-2.0 (26/11/2026)";
 /* URL ứng dụng web Apps Script (kết thúc bằng /exec). Để trống: chạy chế độ thử, không lưu. */
 const API_URL = "https://script.google.com/macros/s/AKfycbyBkc8syljltjsKrByMQ0Gqsc7a1ACgWZefSb28LmMAzYaf7D_agtUNp3ansEii78F1/exec";
 const COUNTRIES = ["Anh", "Argentina", "Ba Lan", "Brazil", "Campuchia", "Canada", "Hà Lan", "Hàn Quốc", "Hồng Kông (TQ)", "Indonesia", "Israel", "Italia", "Malaysia", "Mexico", "Mỹ", "Nhật Bản", "Philippines", "Pháp", "Singapore", "Séc", "Thái Lan", "Trung Quốc", "Úc", "Đài Loan", "Đức", "Ấn Độ"];
 const SECTIONS = [["I", "Động vật sống, sản phẩm động vật"], ["II", "Sản phẩm thực vật"], ["III", "Dầu mỡ động thực vật"], ["IV", "Thực phẩm chế biến, đồ uống, thuốc lá"], ["V", "Khoáng sản, nhiên liệu"], ["VI", "Hóa chất, mỹ phẩm, chất tẩy rửa"], ["VII", "Nhựa, cao su"], ["VIII", "Da, túi xách"], ["IX", "Gỗ, sản phẩm gỗ"], ["X", "Giấy, sách vở"], ["XI", "Dệt may"], ["XII", "Giày dép, mũ, ô dù"], ["XIII", "Đá, gốm, thủy tinh"], ["XIV", "Đá quý, kim loại quý"], ["XV", "Kim loại cơ bản"], ["XVI", "Máy móc, thiết bị điện, điện tử"], ["XVII", "Phương tiện vận tải"], ["XVIII", "Dụng cụ quang học, y tế, đồng hồ"], ["XIX", "Vũ khí"], ["XX", "Hàng chế tạo khác (đồ chơi, nội thất, văn phòng phẩm)"], ["XXI", "Tác phẩm nghệ thuật"]];
-const FILES = {anim:"anim.html", static:"static.html", explorer:"explorer.html", c3:"c3.png"};
-const LIMIT = 180, HINT_AFTER = 60, T5_SOFT = 300, FLASH_MS = 5000;
+const FILES = {anim:"anim.html", static:"static.html", explorer:"explorer.html", c3:"c3.png", c2:"c2.png", c5:"c5.png"};
+const IMAGES = new Set(["c3", "c2", "c5"]);
+const HINT_AFTER = 60, T6_SOFT = 300, FLASH_MS = 5000;
 
 const TASKS = [
-  {id:"T1", title:"Nhiệm vụ 1/4", left:["anim"],
+  {id:"T1", title:"Nhiệm vụ 1/5", left:["anim"], limit:180,
    q:"Dùng hình bên trái. Năm 2024, Việt Nam nhập khẩu nhiều nhất từ nước nào, và nước đó chiếm khoảng bao nhiêu phần trăm?",
    hint:"Bạn thử bấm nút Nhập khẩu, rồi kéo thanh năm đến 2024.", inputs:["country","number"]},
-  {id:"T2", title:"Nhiệm vụ 2/4", left:["explorer"],
-   q:"Dùng công cụ bên trái. Năm 2024, nhóm hàng máy móc, thiết bị điện, điện tử (nhóm XVI) được xuất khẩu nhiều nhất sang nước nào, và nước đó chiếm bao nhiêu phần trăm?",
-   hint:"Bạn thử đổi ô Nhóm hàng, chọn năm 2024 và chiều Xuất khẩu.", inputs:["country","number"]},
-  {id:"T3", title:"Nhiệm vụ 3/4", left:["explorer"],
-   q:"Năm 2024, giữa nhóm XVI (máy móc, điện tử) và nhóm XX (đồ chơi, nội thất, văn phòng phẩm), nhóm nào bán dồn vào ít thị trường hơn? Bạn dựa vào đâu để nói vậy?",
-   hint:"Bạn thử nhìn đường HHI ở bên phải: số càng cao thì hàng càng dồn vào ít nước.", inputs:["choice","reason"]},
-  {id:"T4", title:"Nhiệm vụ 4/4", left:["explorer"],
+  {id:"T2", title:"Nhiệm vụ 2/5", left:["c2"], limit:120,
+   q:"Dùng biểu đồ bên trái. Năm 2024, Mỹ chiếm phần lớn hơn trong xuất khẩu hay trong nhập khẩu của Việt Nam? Trong nhập khẩu, Mỹ chiếm khoảng bao nhiêu phần trăm?",
+   hint:"Bạn so thanh Mỹ ở khung bên trái (xuất khẩu) với thanh Mỹ ở khung bên phải (nhập khẩu).",
+   inputs:["choice","number"], choice:{label:"Mỹ chiếm phần lớn hơn trong", opts:[["xuat","Xuất khẩu của Việt Nam"],["nhap","Nhập khẩu của Việt Nam"],["ngang","Gần bằng nhau"]]},
+   numberLabel:"Trong nhập khẩu, Mỹ chiếm khoảng bao nhiêu phần trăm?"},
+  {id:"T3", title:"Nhiệm vụ 3/5", left:["c5"], limit:120,
+   q:"Dùng biểu đồ bên trái. Năm 2024, trong bốn đường, đường nào cao nhất? Từ 2004 đến 2024, nhập khẩu theo đối tác dồn vào ít nước hơn, trải ra nhiều nước hơn hay gần như không đổi?",
+   hint:"Bạn nhìn khung dưới (Theo đối tác) và số ghi ở cuối mỗi đường; đường càng cao thì càng dồn vào ít nước.",
+   inputs:["choice","reason"], choice:{label:"Năm 2024, đường cao nhất là", opts:[["xuat_chuong","Xuất khẩu theo chương HS"],["nhap_chuong","Nhập khẩu theo chương HS"],["xuat_doitac","Xuất khẩu theo đối tác"],["nhap_doitac","Nhập khẩu theo đối tác"]]},
+   reason:{label:"Từ 2004 đến 2024, nhập khẩu theo đối tác", opts:[["it_hon","Dồn vào ít nước hơn"],["nhieu_hon","Trải ra nhiều nước hơn"],["khong_doi","Gần như không đổi"]], other:false}},
+  {id:"T4", title:"Nhiệm vụ 4/5", left:["explorer"], limit:180,
+   q:"Dùng công cụ bên trái. Năm 2024, giữa nhóm XVI (máy móc, điện tử) và nhóm XX (đồ chơi, nội thất, văn phòng phẩm), nhóm nào bán dồn vào ít thị trường hơn? Bạn dựa vào đâu để nói vậy?",
+   hint:"Bạn thử nhìn đường HHI ở bên phải: số càng cao thì hàng càng dồn vào ít nước.",
+   inputs:["choice","reason"], choice:{label:"Nhóm nào bán dồn vào ít thị trường hơn?", opts:[["XVI","Nhóm XVI (máy móc, điện tử)"],["XX","Nhóm XX (đồ chơi, nội thất, văn phòng phẩm)"],["khong_biet","Không phân biệt được"]]},
+   reason:{label:"Bạn dựa vào đâu?", opts:[["hhi","Đường HHI"],["top1","Thanh của thị trường lớn nhất"],["n_partner","Số đối tác"],["khac","Khác"]], other:true}},
+  {id:"T5", title:"Nhiệm vụ 5/5", left:["explorer"], limit:180,
    q:"Hãy tìm một nhóm hàng mà năm 2024 Việt Nam nhập khẩu hơn 80% từ một nước duy nhất. Đó là nhóm nào, nước nào?",
    hint:"Bạn thử chuyển chiều sang Nhập khẩu rồi đổi lần lượt các nhóm hàng.", inputs:["section","country"]},
 ];
-const T5 = {id:"T5", title:"Câu hỏi quyết định", left:["anim","static","explorer","c3"],
-  q:"Giả sử bạn là cán bộ xúc tiến thương mại và chỉ được chọn 1 tổ hợp nhóm hàng và thị trường để hỗ trợ doanh nghiệp năm tới. Bạn chọn tổ hợp nào? Hình nào giúp bạn quyết định?"};
-const LEFT_LABEL = {anim:"Hình động", static:"Hình tĩnh", explorer:"Công cụ tra cứu", c3:"Biểu đồ cơ cấu xuất khẩu"};
-const CHOICES_T3 = [["XVI","Nhóm XVI (máy móc, điện tử)"],["XX","Nhóm XX (đồ chơi, nội thất, văn phòng phẩm)"],["khong_biet","Không phân biệt được"]];
-const REASONS_T3 = [["hhi","Đường HHI"],["top1","Thanh của thị trường lớn nhất"],["n_partner","Số đối tác"],["khac","Khác"]];
+const T6 = {id:"T6", title:"Câu hỏi quyết định", left:["anim","static","explorer","c3","c2","c5"],
+  q:"Giả sử bạn là cán bộ xúc tiến thương mại và chỉ được chọn 1 tổ hợp nhóm hàng và thị trường để hỗ trợ doanh nghiệp năm tới. Bạn chọn tổ hợp nào? Vì sao? Hình nào giúp bạn quyết định?"};
+const LEFT_LABEL = {anim:"Hình động", static:"Hình tĩnh", explorer:"Công cụ tra cứu", c3:"Cơ cấu xuất khẩu", c2:"Đối tác 2024", c5:"Mức tập trung (HHI)"};
 const METHODS = [["doc_hinh","Đọc trên hình hoặc công cụ"],["doan","Đoán"],["biet_truoc","Biết từ trước"]];
 
 /* ============ Tiện ích ============ */
@@ -174,7 +182,7 @@ function screenIntro(){
     h("p", {}, "Nhóm đang kiểm tra xem bộ biểu đồ và công cụ tra cứu có dễ hiểu, dễ dùng không. Bài thử đánh giá biểu đồ, không đánh giá bạn; không có câu trả lời nào làm bạn bị điểm kém."),
     h("div", {class:"info"},
       h("div", {}, h("b", {}, "Thời lượng"), h("span", {}, "Khoảng 20 đến 25 phút, làm một lần, một mình.")),
-      h("div", {}, h("b", {}, "Bạn sẽ làm"), h("span", {}, "Xem một biểu đồ trong 5 giây; làm 4 nhiệm vụ tra cứu ngắn (mỗi nhiệm vụ tối đa 3 phút); trả lời 1 câu hỏi chọn lựa và 3 câu hỏi cuối.")),
+      h("div", {}, h("b", {}, "Bạn sẽ làm"), h("span", {}, "Xem một biểu đồ trong 5 giây; làm 5 nhiệm vụ đọc hình ngắn (mỗi nhiệm vụ tối đa 2 hoặc 3 phút); trả lời 1 câu hỏi chọn lựa, viết lại ý chính bạn nhớ được và 3 câu hỏi cuối.")),
       h("div", {}, h("b", {}, "Nhóm ghi lại"), h("span", {}, "Câu trả lời, số giây làm mỗi nhiệm vụ, bạn có bấm xem gợi ý không, số lần bạn rời khỏi trang. Nhóm không ghi tên thật, không ghi âm, không quay phim.")),
       h("div", {}, h("b", {}, "Sử dụng kết quả"), h("span", {}, "Chỉ dùng cho đồ án môn học; báo cáo theo mã (U1, U2…), không có thông tin nhận dạng bạn.")),
       h("div", {}, h("b", {}, "Quyền dừng"), h("span", {}, "Bạn có thể dừng bất cứ lúc nào bằng nút “Dừng” ở góc màn hình; khi đó câu trả lời của bạn không được lưu."))),
@@ -248,9 +256,9 @@ function screenGuide(){
     h("h2", {}, "Cách làm"),
     h("ol", {class:"tight"},
       h("li", {}, "Đầu tiên, một biểu đồ hiện trong đúng 5 giây rồi biến mất. Sau đó bạn ghi lại bạn nhớ được gì."),
-      h("li", {}, "Tiếp theo là 4 nhiệm vụ. Bên trái là trang hoặc công cụ, bên phải là câu hỏi. Mỗi nhiệm vụ tối đa 3 phút; hết giờ trang tự chuyển sang nhiệm vụ sau."),
+      h("li", {}, "Tiếp theo là 5 nhiệm vụ. Bên trái là biểu đồ hoặc công cụ, bên phải là câu hỏi. Mỗi nhiệm vụ tối đa 2 hoặc 3 phút (đồng hồ hiện ở bên phải); hết giờ trang tự chuyển sang nhiệm vụ sau."),
       h("li", {}, "Nếu bí, sau 1 phút bạn có thể bấm “Xem gợi ý” (mỗi nhiệm vụ một gợi ý). Hãy thử tự làm trước."),
-      h("li", {}, "Cuối cùng là 1 câu hỏi chọn lựa và 3 câu hỏi về cảm nhận của bạn.")),
+      h("li", {}, "Cuối cùng là 1 câu hỏi chọn lựa, 1 câu viết lại ý chính bạn nhớ được (lúc đó các hình sẽ được ẩn đi) và 3 câu hỏi về cảm nhận của bạn.")),
     h("div", {class:"msg"}, "Bạn vui lòng không mở tab khác và không tra cứu bên ngoài trong lúc làm."),
     h("div", {class:"row", style:"justify-content:space-between"}, h("button", {class:"btn", onclick:screenFlashIntro}, "Bắt đầu phần 5 giây"), stopLink()));
 }
@@ -289,7 +297,7 @@ function row(task_id, extra){
 }
 
 function frame(kind){
-  if (kind === "c3") return h("div", {class:"imgwrap"}, h("img", {src:FILES.c3, alt:LEFT_LABEL.c3}));
+  if (IMAGES.has(kind)) return h("div", {class:"imgwrap"}, h("img", {src:FILES[kind], alt:LEFT_LABEL[kind]}));
   return h("iframe", {src:FILES[kind] + "?t=" + Date.now(), title:LEFT_LABEL[kind]});
 }
 
@@ -305,8 +313,8 @@ function sectionSelect(id){
 
 let TIMER = null;
 function runTask(i){
-  if (i >= TASKS.length) return runT5();
-  const T = TASKS[i];
+  if (i >= TASKS.length) return runT6();
+  const T = TASKS[i], LIMIT = T.limit;
   $("#text").hidden = true; $("#task").classList.add("on"); $("#tabs").hidden = true;
   const frames = $("#frames"); frames.replaceChildren(h("div", {id:"loading"}, "Đang tải…"));
   const f = frame(T.left[0]); frames.appendChild(f);
@@ -320,12 +328,12 @@ function runTask(i){
 
   const inputs = [];
   if (T.inputs.includes("country")) inputs.push(h("label", {class:"field"}, h("span", {}, "Nước"), ...countrySelect("c")));
-  if (T.inputs.includes("number")) inputs.push(h("label", {class:"field"}, h("span", {}, "Khoảng bao nhiêu phần trăm?"),
+  if (T.inputs.includes("choice")) inputs.push(h("div", {class:"field"}, h("span", {}, T.choice.label), radioGroup("choice", T.choice.opts)));
+  if (T.inputs.includes("number")) inputs.push(h("label", {class:"field"}, h("span", {}, T.numberLabel || "Khoảng bao nhiêu phần trăm?"),
     h("input", {type:"text", id:"num", inputmode:"decimal", placeholder:"Ví dụ: 12,5"})));
   if (T.inputs.includes("section")) inputs.unshift(h("label", {class:"field"}, h("span", {}, "Nhóm hàng"), sectionSelect("sec")));
-  if (T.inputs.includes("choice")) inputs.push(h("div", {class:"field"}, h("span", {}, "Nhóm nào bán dồn vào ít thị trường hơn?"), radioGroup("choice", CHOICES_T3)));
-  if (T.inputs.includes("reason")) inputs.push(h("div", {class:"field"}, h("span", {}, "Bạn dựa vào đâu?"), radioGroup("reason", REASONS_T3),
-    h("input", {type:"text", id:"reason_other", placeholder:"Nếu chọn Khác, ghi rõ"})));
+  if (T.inputs.includes("reason")) inputs.push(h("div", {class:"field"}, h("span", {}, T.reason.label), radioGroup("reason", T.reason.opts),
+    T.reason.other ? h("input", {type:"text", id:"reason_other", placeholder:"Nếu chọn Khác, ghi rõ"}) : null));
   const method = h("div", {class:"field"}, h("span", {}, "Bạn ra câu trả lời bằng cách nào?"), radioGroup("method", METHODS));
   const diff = h("label", {class:"field"}, h("span", {}, "Có chỗ nào làm bạn khó khăn hoặc mất thời gian không? (không bắt buộc)"), h("textarea", {id:"diff", style:"min-height:60px"}));
   const ok = h("button", {class:"btn"}, "Xác nhận câu trả lời");
@@ -350,8 +358,8 @@ function runTask(i){
     if (a.answer_country === "khac" && !a.answer_country_other.trim()) return "Bạn ghi tên nước.";
     if (T.inputs.includes("number") && !/^\d{1,3}([.,]\d+)?$/.test(a.answer_number)) return "Bạn nhập một số phần trăm, ví dụ 12,5.";
     if (T.inputs.includes("section") && !a.answer_section) return "Bạn chọn một nhóm hàng.";
-    if (T.inputs.includes("choice") && !a.answer_choice) return "Bạn chọn một nhóm.";
-    if (T.inputs.includes("reason") && !a.answer_reason) return "Bạn chọn điều bạn dựa vào.";
+    if (T.inputs.includes("choice") && !a.answer_choice) return "Bạn chọn một đáp án ở câu: " + T.choice.label;
+    if (T.inputs.includes("reason") && !a.answer_reason) return "Bạn chọn một đáp án ở câu: " + T.reason.label;
     if (!a.method) return "Bạn cho biết bạn ra câu trả lời bằng cách nào.";
     return "";
   }
@@ -360,7 +368,7 @@ function runTask(i){
     const sec = t0 === null ? 0 : (performance.now() - t0) / 1000;
     S.rows.push(row(T.id, Object.assign(collect(), {hints: hintAt === "" ? 0 : 1, hint_at_s: hintAt === "" ? "" : hintAt.toFixed(1),
       seconds: sec.toFixed(1), load_s: loadS, timed_out: kind === "timeout" ? 1 : 0, skipped: kind === "skip" ? 1 : 0, left_page: LEFT_PAGE - left0})));
-    if (kind === "timeout") showTimeout(i); else runTask(i + 1);
+    if (kind === "timeout") showTimeout(i, LIMIT); else runTask(i + 1);
   }
   ok.addEventListener("click", () => { const m = valid(collect()); if (m){ err.textContent = m; err.hidden = false; return; } finish("ok"); });
   skip.addEventListener("click", () => finish("skip"));
@@ -379,21 +387,23 @@ function runTask(i){
       if (s >= LIMIT) finish("timeout");
     }, 250);
   };
-  f.addEventListener("load", start);
+  const img = f.tagName === "IFRAME" ? null : f.querySelector("img");
+  if (img && img.complete && img.naturalWidth) setTimeout(start, 0);
+  else (img || f).addEventListener("load", start);
   setTimeout(start, 20000);   // nếu sự kiện load không đến, vẫn bắt đầu đếm sau 20 giây
 }
 
-function showTimeout(i){
-  $("#side").replaceChildren(h("div", {class:"msg"}, "Hết 3 phút cho nhiệm vụ này. Không sao cả, mình chuyển sang phần tiếp theo."),
+function showTimeout(i, limit){
+  $("#side").replaceChildren(h("div", {class:"msg"}, `Hết ${Math.round(limit / 60)} phút cho nhiệm vụ này. Không sao cả, mình chuyển sang phần tiếp theo.`),
     h("button", {class:"btn", onclick:() => runTask(i + 1)}, "Tiếp tục"));
 }
 
-/* ============ 4. Câu hỏi quyết định (T5) ============ */
-function runT5(){
+/* ============ 4. Câu hỏi quyết định (T6) ============ */
+function runT6(){
   $("#text").hidden = true; $("#task").classList.add("on");
   const tabs = $("#tabs"); tabs.hidden = false;
   const frames = $("#frames"); frames.replaceChildren();
-  const used = new Set([T5.left[0]]);
+  const used = new Set([T6.left[0]]);
   const panes = {};
   const show = k => {
     used.add(k);
@@ -401,22 +411,22 @@ function runT5(){
     if (!panes[k]){ panes[k] = frame(k); frames.appendChild(panes[k]); }
     [...tabs.children].forEach(b => b.setAttribute("aria-pressed", b.dataset.k === k ? "true" : "false"));
   };
-  tabs.replaceChildren(...T5.left.map(k => h("button", {"data-k":k, onclick:() => show(k)}, LEFT_LABEL[k])));
-  show(T5.left[0]);
+  tabs.replaceChildren(...T6.left.map(k => h("button", {"data-k":k, onclick:() => show(k)}, LEFT_LABEL[k])));
+  show(T6.left[0]);
 
   const t0 = performance.now(), left0 = LEFT_PAGE;
   const timer = h("span", {class:"timer"}, "0:00");
   TIMER = setInterval(() => {
     const s = (performance.now() - t0) / 1000;
-    timer.textContent = mmss(s) + (s >= T5_SOFT ? " (bạn có thể kết thúc)" : "");
+    timer.textContent = mmss(s) + (s >= T6_SOFT ? " (bạn có thể kết thúc)" : "");
   }, 500);
-  const charts = h("div", {class:"radio"}, T5.left.map(k => h("label", {}, h("input", {type:"checkbox", name:"chart", value:k}), h("span", {}, LEFT_LABEL[k]))));
+  const charts = h("div", {class:"radio"}, T6.left.map(k => h("label", {}, h("input", {type:"checkbox", name:"chart", value:k}), h("span", {}, LEFT_LABEL[k]))));
   const err = h("div", {class:"msg err", hidden:true});
   const ok = h("button", {class:"btn"}, "Xác nhận");
   $("#side").replaceChildren(
-    h("div", {class:"top"}, h("span", {class:"pill"}, S.code), h("span", {}, T5.title), stopLink()),
-    h("div", {class:"q"}, T5.q),
-    h("p", {class:"small muted"}, "Bấm các nút phía trên hình để chuyển giữa hình động, hình tĩnh, công cụ tra cứu và biểu đồ. Câu này không có đáp án đúng."),
+    h("div", {class:"top"}, h("span", {class:"pill"}, S.code), h("span", {}, T6.title), stopLink()),
+    h("div", {class:"q"}, T6.q),
+    h("p", {class:"small muted"}, "Bấm các nút phía trên hình để chuyển giữa các hình và công cụ tra cứu. Câu này không có đáp án đúng."),
     h("div", {class:"row small muted", style:"justify-content:space-between"}, h("span", {}, "Thời gian (gợi ý tối đa 5 phút)"), timer),
     h("label", {class:"field"}, h("span", {}, "Nhóm hàng bạn chọn"), sectionSelect("sec")),
     h("label", {class:"field"}, h("span", {}, "Thị trường bạn chọn"), ...countrySelect("c")),
@@ -429,14 +439,30 @@ function runT5(){
     const ch = [...document.querySelectorAll('input[name="chart"]:checked')].map(x => x.value);
     if (!sec || !c || why.length < 5 || !ch.length){ err.textContent = "Bạn chọn nhóm hàng, thị trường, ghi lý do và đánh dấu ít nhất một hình."; err.hidden = false; return; }
     clearInterval(TIMER);
-    S.rows.push(row("T5", {answer_section:sec, answer_country:c, answer_country_other:($("#c_other")||{}).value || "", answer_text:why,
+    S.rows.push(row("T6", {answer_section:sec, answer_country:c, answer_country_other:($("#c_other")||{}).value || "", answer_text:why,
       charts_used:ch.join(";"), seconds:((performance.now() - t0) / 1000).toFixed(1), left_page:LEFT_PAGE - left0,
       method:"tabs_opened:" + [...used].join(";")}));
-    screenFinal();
+    screenRecall();
   });
 }
 
-/* ============ 5. Ba câu hỏi cuối và gửi ============ */
+/* ============ 5. Nhắc lại ý chính (R): ẩn mọi hình trước khi hỏi ============ */
+function screenRecall(){
+  $("#task").classList.remove("on"); $("#frames").replaceChildren(); $("#tabs").hidden = true; $("#text").hidden = false;
+  const t0 = performance.now();
+  const ta = h("textarea", {id:"recall", placeholder:"Viết bằng lời của bạn, 1 đến 2 câu."});
+  const btn = h("button", {class:"btn", disabled:true}, "Tiếp tục");
+  ta.addEventListener("input", () => btn.disabled = ta.value.trim().length < 5);
+  btn.addEventListener("click", () => {
+    S.rows.push(row("R", {answer_text: ta.value.trim(), seconds: ((performance.now() - t0) / 1000).toFixed(1)}));
+    screenFinal();
+  });
+  showText(progress(6, 7), h("h2", {}, "Bạn nhớ được gì?"),
+    h("p", {}, "Các hình đã được ẩn. Theo bạn, ý chính mà bộ biểu đồ này muốn nói là gì? Không cần đúng từng con số, bạn viết theo những gì bạn nhớ."),
+    ta, h("div", {class:"row"}, btn));
+}
+
+/* ============ 6. Ba câu hỏi cuối và gửi ============ */
 function screenFinal(){
   const qs = [["q1","Phần nào làm bạn mất thời gian hoặc khó hiểu nhất?"],
               ["q2","Có con số hay biểu đồ nào bạn chưa tin hoặc chưa hiểu không?"],

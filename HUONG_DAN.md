@@ -4,11 +4,13 @@ P03 "Made in…?", Nhóm 02. Trang này là bản tự làm trên web của quy 
 
 | File | Vai trò |
 |---|---|
-| `index.html` | Trang người thử mở: phiếu đồng ý, sàng lọc, bài 5 giây, T1 đến T5, 3 câu hỏi cuối |
-| `anim.html` | Hình động 10 đối tác lớn nhất, 2004–2024 (T1, T5) |
-| `static.html` | Hình tĩnh: đường tỷ trọng các đối tác lớn, 2004–2024 (T5) |
-| `explorer.html` | Bản HTML của explorer M9-03 (T2 đến T5) |
-| `c3.png` | Hình C3, hình số 1 của Big Idea (bài 5 giây, T5) |
+| `index.html` | Trang người thử mở: phiếu đồng ý, sàng lọc, bài 5 giây, T1 đến T6, câu nhắc lại ý chính (R), 3 câu hỏi cuối |
+| `anim.html` | Hình động 10 đối tác lớn nhất, 2004–2024 (T1, T6) |
+| `c2.png` | Hình C2, hình số 2 của Big Idea: đối tác xuất và nhập 2024 (T2, T6) |
+| `c5.png` | Hình C5, hình số 3 của Big Idea: HHI 2004–2024 (T3, T6) |
+| `explorer.html` | Bản HTML của explorer M9-03 (T4, T5, T6) |
+| `static.html` | Hình tĩnh: đường tỷ trọng các đối tác lớn, 2004–2024 (T6) |
+| `c3.png` | Hình C3, hình số 1 của Big Idea (bài 5 giây, T6) |
 | `Code.gs` | Apps Script nhận câu trả lời và ghi vào Google Sheet |
 
 Trang **không chứa đáp án**. Notebook chấm từ dữ liệu thô ở mục 4a.
@@ -29,12 +31,12 @@ Khi `API_URL` để trống, trang chạy ở chế độ thử: mã có dạng 
 ## 2. Chạy thử trước khi mời người thật
 
 1. Mở link có thêm `?pilot=1` ở cuối (ví dụ `https://nguyendinhphuc-tdzy.github.io/m10-thu-nguoi-dung/?pilot=1`) trong cửa sổ ẩn danh, làm hết một lượt. Mã sẽ là `P1`, `P2`…, notebook không tính.
-2. Kiểm tra Sheet đã có trang tính `sessions` (1 dòng) và `responses` (6 dòng: F5, T1 đến T5).
+2. Kiểm tra Sheet đã có trang tính `sessions` (1 dòng) và `responses` (8 dòng: F5, T1 đến T6, R).
 3. Nếu có câu hỏi khó hiểu, sửa `index.html` **trước** khi mời người thật, và ghi thay đổi vào ghi chú buổi chạy thử `m10_notes_U0.md`.
 
 ## 3. Mời người thử
 
-- 5 người: 1 người làm kinh doanh, 4 sinh viên ngoài nhóm; chưa xem biểu đồ của nhóm, chưa làm bài thử nào khác (M8, M9-04, nghe Big Idea). Trang tự hỏi 3 câu sàng lọc và cho dừng nếu không đủ điều kiện (mã `X1`, `X2`… trong Sheet).
+- 5 người: 1 người làm kinh doanh, 4 sinh viên ngoài nhóm; chưa xem biểu đồ của nhóm, chưa làm bài thử nào khác (M8, M9-04, nghe đọc thử Big Idea ở M9-01). Đối chiếu tên với danh sách người đã thử trước khi gửi link. Trang tự hỏi 3 câu sàng lọc và cho dừng nếu không đủ điều kiện (mã `X1`, `X2`… trong Sheet).
 - Gửi link **không có** `?pilot=1`. Dặn: làm trên máy tính có chuột hoặc bàn di, một lần, một mình, không mở tab khác, khoảng 25 phút.
 - Người làm kinh doanh nên làm có người dẫn: Phúc ngồi cạnh, đọc lời mở đầu trong protocol; Tường Vy ghi think-aloud vào `m10_notes_Ux.md` theo mã hiện trên màn hình.
 - Tên thật và sổ mời lưu riêng, không đưa vào bài nộp.
@@ -42,8 +44,8 @@ Khi `API_URL` để trống, trang chạy ở chế độ thử: mã có dạng 
 ## 4. Lấy dữ liệu cho notebook
 
 1. Trong Sheet: chọn trang tính `responses`, **Tệp > Tải xuống > Giá trị được phân tách bằng dấu phẩy (.csv)**, lưu thành `evidence/tests/m10_form_responses.csv`. Làm tương tự với `sessions` thành `m10_form_sessions.csv`.
-2. Mở `07_evaluation_M10.ipynb`, Run all. Mục 4a chấm T1 đến T4 và thêm vào `m10_results.csv`, `m10_five_second.csv`, `m10_insights.csv`, `m10_issues.csv`.
-3. Chấm tay phần còn lại: `rater1`, `rater2` của bài 5 giây (hai người chấm độc lập); `correct`, `depth` của insight; `severity` của vấn đề. Chạy lại mục 4 để ra `m10_summary.md`.
+2. Mở `07_evaluation_M10.ipynb`, Run all. Mục 4a chấm T1 đến T5 và thêm vào `m10_results.csv`, `m10_five_second.csv`, `m10_recall.csv`, `m10_decisions.csv`, `m10_insights.csv`, `m10_issues.csv`.
+3. Chấm tay phần còn lại: `rater1`, `rater2` của bài 5 giây và của quyết định T6 (hai người chấm độc lập); 4 cột ý và `checked_by` của câu R (notebook đã gợi ý bằng từ khóa); `correct`, `depth` của insight; `severity` của vấn đề. Chạy lại mục 4 để ra `m10_summary.md`.
 
 ## 5. Bảo vệ dữ liệu
 
