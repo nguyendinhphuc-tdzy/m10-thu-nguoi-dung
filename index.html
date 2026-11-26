@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thử bộ biểu đồ thương mại Việt Nam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Cùng phong cách với form M8: màn văn bản là một trang trắng giữa nền xám nhạt; màn nhiệm vụ chia đôi, hình bên trái, câu hỏi bên phải. */
+:root{
+  --ink:#16202c; --muted:#5b6675; --line:#d5dbe3; --line-soft:#e6eaf0; --paper:#fff; --bg:#f2f4f8;
+  --accent:#1f4e79; --accent-strong:#163a5c; --accent-soft:#e8f0f8;
+  --ok:#1b7a43; --ok-soft:#e9f6ee; --warn:#a85f00; --warn-soft:#fff5e6; --bad:#b3261e; --bad-soft:#fdeceb;
+  --font:"Be Vietnam Pro","Segoe UI",Arial,sans-serif; color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;background:var(--bg)}
+p{margin:0} h1{font-size:1.55rem;line-height:1.3;margin:0} h2{font-size:1.2rem;line-height:1.35;margin:0}
+.page{max-width:720px;margin:32px auto 56px;padding:28px 36px 32px;background:var(--paper);border:1px solid var(--line-soft);border-radius:16px;
+  display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-size:.8rem;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:-10px}
+.muted{color:var(--muted)} .small{font-size:.9rem}
+ul.tight,ol.tight{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.info{border:1px solid var(--line-soft);border-radius:12px;overflow:hidden}
+.info > div{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:11px 16px}
+.info > div + div{border-top:1px solid var(--line-soft)} .info b{color:var(--accent);font-size:.92rem}
+.check{display:flex;gap:12px;align-items:center;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;background:#fff}
+.check:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.check input{width:19px;height:19px;margin:0;flex:none;accent-color:var(--accent)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field > span{font-weight:600;font-size:.95rem}
+select,textarea,input[type=text]{font:inherit;color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;width:100%;background:#fff}
+textarea{min-height:84px;resize:vertical}
+.btn{font:inherit;font-weight:600;border-radius:10px;padding:12px 18px;cursor:pointer;border:1.5px solid var(--accent);background:var(--accent);color:#fff}
+.btn:hover:not(:disabled){background:var(--accent-strong)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{background:#c9d2dc;border-color:#c9d2dc;color:#fff;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.msg{padding:11px 14px;border-left:4px solid var(--warn);background:var(--warn-soft);border-radius:0 10px 10px 0;font-size:.95rem}
+.msg.ok{border-left-color:var(--ok);background:var(--ok-soft)} .msg.err{border-left-color:var(--bad);background:var(--bad-soft)}
+.pill{display:inline-flex;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:.78rem}
+.track{height:8px;border-radius:999px;background:var(--line-soft);overflow:hidden} .track i{display:block;height:100%;background:var(--accent)}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--muted);text-decoration:underline;cursor:pointer}
+[hidden]{display:none !important}
+/* Màn nhiệm vụ */
+#task{display:none;height:100vh;grid-template-columns:minmax(0,1fr) 400px;background:#fff}
+#task.on{display:grid}
+#left{position:relative;display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--line)}
+#tabs{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line-soft);background:#fbfcfd}
+#tabs button{font:inherit;font-size:.88rem;padding:6px 12px;border:1.5px solid var(--line);background:#fff;border-radius:8px;cursor:pointer}
+#tabs button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
+#frames{position:relative;flex:1;min-height:0}
+#frames iframe,#frames .imgwrap{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+#frames .imgwrap{overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:12px}
+#frames .imgwrap img{max-width:100%;height:auto}
+#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#fff;color:var(--muted);z-index:2}
+#side{background:#fbfcfd;padding:14px 18px 0;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+#side .top{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--muted)}
+.q{font-size:1.06rem;font-weight:700;line-height:1.4;background:var(--accent-soft);border-left:4px solid var(--accent);padding:10px 12px;border-radius:0 10px 10px 0}
+.timer{font-variant-numeric:tabular-nums;font-weight:700}
+.timer.warn{color:var(--warn)} .timer.over{color:var(--bad)}
+#side .confirm{position:sticky;bottom:0;margin-top:auto;background:#fbfcfd;border-top:1px solid var(--line-soft);padding:10px 0 14px;display:flex;flex-direction:column;gap:8px}
+.hintbox{font-size:.92rem;padding:9px 12px;background:var(--warn-soft);border-radius:10px}
+.radio{display:flex;flex-direction:column;gap:6px}
+.radio label{display:flex;gap:10px;align-items:center;padding:8px 12px;border:1.5px solid var(--line);border-radius:9px;cursor:pointer;background:#fff;font-size:.95rem}
+.radio label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.radio input{accent-color:var(--accent);margin:0}
+/* Bài 5 giây */
+#flash{display:none;position:fixed;inset:0;background:#fff;z-index:10;align-items:center;justify-content:center;padding:16px}
+#flash.on{display:flex} #flash img{max-width:100%;max-height:100%}
+@media (max-width:760px){.page{margin:0;border-radius:0;border:0;padding:24px 16px 40px}.info > div{grid-template-columns:1fr;gap:2px}}
+</style>
+</head>
+<body>
+<div id="text" class="page"></div>
+<div id="task">
+  <div id="left">
+    <div id="tabs" hidden></div>
+    <div id="frames"><div id="loading">Đang tải…</div></div>
+  </div>
+  <div id="side"></div>
+</div>
+<div id="flash"><img id="flashimg" alt="Biểu đồ cho bài 5 giây"></div>
+
+<script>
+/* ======================================================================
+   M10 · Thử với người dùng, bản người thử tự làm (P03 "Made in…?", Nhóm 02)
+   Câu hỏi giống m10_protocol.md (tạo bởi notebooks/M10/07_evaluation_M10.ipynb).
+   Trang không chứa đáp án; notebook chấm từ dữ liệu thô.
+   ====================================================================== */
+const APP_VERSION = "m10-tu-lam-1.0 (26/11/2026)";
+/* URL ứng dụng web Apps Script (kết thúc bằng /exec). Để trống: chạy chế độ thử, không lưu. */
+const API_URL = "";
+const COUNTRIES = ["Anh", "Argentina", "Ba Lan", "Brazil", "Campuchia", "Canada", "Hà Lan", "Hàn Quốc", "Hồng Kông (TQ)", "Indonesia", "Israel", "Italia", "Malaysia", "Mexico", "Mỹ", "Nhật Bản", "Philippines", "Pháp", "Singapore", "Séc", "Thái Lan", "Trung Quốc", "Úc", "Đài Loan", "Đức", "Ấn Độ"];
+const SECTIONS = [["I", "Động vật sống, sản phẩm động vật"], ["II", "Sản phẩm thực vật"], ["III", "Dầu mỡ động thực vật"], ["IV", "Thực phẩm chế biến, đồ uống, thuốc lá"], ["V", "Khoáng sản, nhiên liệu"], ["VI", "Hóa chất, mỹ phẩm, chất tẩy rửa"], ["VII", "Nhựa, cao su"], ["VIII", "Da, túi xách"], ["IX", "Gỗ, sản phẩm gỗ"], ["X", "Giấy, sách vở"], ["XI", "Dệt may"], ["XII", "Giày dép, mũ, ô dù"], ["XIII", "Đá, gốm, thủy tinh"], ["XIV", "Đá quý, kim loại quý"], ["XV", "Kim loại cơ bản"], ["XVI", "Máy móc, thiết bị điện, điện tử"], ["XVII", "Phương tiện vận tải"], ["XVIII", "Dụng cụ quang học, y tế, đồng hồ"], ["XIX", "Vũ khí"], ["XX", "Hàng chế tạo khác (đồ chơi, nội thất, văn phòng phẩm)"], ["XXI", "Tác phẩm nghệ thuật"]];
+const FILES = {scrolly:"scrolly.html", explorer:"explorer.html", c3:"c3.png"};
+const LIMIT = 180, HINT_AFTER = 60, T5_SOFT = 300, FLASH_MS = 5000;
+
+const TASKS = [
+  {id:"T1", title:"Nhiệm vụ 1/4", left:["scrolly"],
+   q:"Mời bạn cuộn trang bên trái từ đầu đến cuối. Năm 2024, Việt Nam nhập khẩu nhiều nhất từ nước nào, và nước đó chiếm khoảng bao nhiêu phần trăm?",
+   hint:"Bạn thử cuộn tới phần Nhập khẩu, đoạn có năm 2024.", inputs:["country","number"]},
+  {id:"T2", title:"Nhiệm vụ 2/4", left:["explorer"],
+   q:"Dùng công cụ bên trái. Năm 2024, nhóm hàng máy móc, thiết bị điện, điện tử (nhóm XVI) được xuất khẩu nhiều nhất sang nước nào, và nước đó chiếm bao nhiêu phần trăm?",
+   hint:"Bạn thử đổi ô Nhóm hàng, chọn năm 2024 và chiều Xuất khẩu.", inputs:["country","number"]},
+  {id:"T3", title:"Nhiệm vụ 3/4", left:["explorer"],
+   q:"Năm 2024, giữa nhóm XVI (máy móc, điện tử) và nhóm XX (đồ chơi, nội thất, văn phòng phẩm), nhóm nào bán dồn vào ít thị trường hơn? Bạn dựa vào đâu để nói vậy?",
+   hint:"Bạn thử nhìn đường HHI ở bên phải: số càng cao thì hàng càng dồn vào ít nước.", inputs:["choice","reason"]},
+  {id:"T4", title:"Nhiệm vụ 4/4", left:["explorer"],
+   q:"Hãy tìm một nhóm hàng mà năm 2024 Việt Nam nhập khẩu hơn 80% từ một nước duy nhất. Đó là nhóm nào, nước nào?",
+   hint:"Bạn thử chuyển chiều sang Nhập khẩu rồi đổi lần lượt các nhóm hàng.", inputs:["section","country"]},
+];
+const T5 = {id:"T5", title:"Câu hỏi quyết định", left:["scrolly","explorer","c3"],
+  q:"Giả sử bạn là cán bộ xúc tiến thương mại và chỉ được chọn 1 tổ hợp nhóm hàng và thị trường để hỗ trợ doanh nghiệp năm tới. Bạn chọn tổ hợp nào? Hình nào giúp bạn quyết định?"};
+const LEFT_LABEL = {scrolly:"Trang cuộn", explorer:"Công cụ tra cứu", c3:"Biểu đồ cơ cấu xuất khẩu"};
+const CHOICES_T3 = [["XVI","Nhóm XVI (máy móc, điện tử)"],["XX","Nhóm XX (đồ chơi, nội thất, văn phòng phẩm)"],["khong_biet","Không phân biệt được"]];
+const REASONS_T3 = [["hhi","Đường HHI"],["top1","Thanh của thị trường lớn nhất"],["n_partner","Số đối tác"],["khac","Khác"]];
+const METHODS = [["doc_hinh","Đọc trên hình hoặc công cụ"],["doan","Đoán"],["biet_truoc","Biết từ trước"]];
+
+/* ============ Tiện ích ============ */
+const $ = s => document.querySelector(s);
+function h(tag, attrs, ...kids){
+  const n = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs||{})){
+    if (k === "class") n.className = v; else if (k === "html") n.innerHTML = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else if (v !== false && v !== null && v !== undefined) n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of kids.flat()) if (c !== null && c !== undefined && c !== false) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+  return n;
+}
+const coll = new Intl.Collator("vi");
+const COUNTRY_OPTS = [...COUNTRIES].sort(coll.compare);
+const mmss = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,"0")}`;
+const GAS = typeof google !== "undefined" && google.script && google.script.run;
+const ONLINE = !!(GAS || API_URL);
+const PILOT = new URLSearchParams(location.search).get("pilot") === "1";
+function call(fn, ...args){
+  if (GAS) return new Promise((res, rej) => { google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args); });
+  if (!API_URL) return Promise.reject(new Error("offline"));
+  /* text/plain để trình duyệt không gửi preflight CORS (Apps Script không trả lời OPTIONS) */
+  return fetch(API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify({fn, args})})
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(d => { if (!d || !d.ok) throw new Error((d && d.error) || "Lỗi máy chủ"); return d.result; });
+}
+const store = {get(k){try{return localStorage.getItem(k);}catch(e){return null;}}, set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+
+/* ============ Trạng thái ============ */
+const S = {code:"", mode: PILOT ? "pilot" : "tu_lam", user_type:"", seen:"", tested:"", rows:[], final:{}, started:null};
+let LEFT_PAGE = 0;
+document.addEventListener("visibilitychange", () => { if (document.hidden) LEFT_PAGE++; });
+
+function showText(...nodes){
+  $("#task").classList.remove("on"); $("#text").hidden = false;
+  const t = $("#text"); t.replaceChildren(...nodes); window.scrollTo(0,0);
+}
+function progress(step, total){
+  return h("div", {class:"row small muted", style:"justify-content:space-between"},
+    h("span", {class:"pill"}, S.code || (PILOT ? "Chạy thử" : "Chưa có mã")), h("span", {}, `Phần ${step}/${total}`));
+}
+
+/* ============ 1. Giới thiệu, đồng ý, sàng lọc ============ */
+function screenIntro(){
+  const small = window.innerWidth < 1000;
+  const agree = h("input", {type:"checkbox", id:"agree"});
+  const btn = h("button", {class:"btn", disabled:true, onclick:screenScreening}, "Tôi đồng ý, bắt đầu");
+  agree.addEventListener("change", () => btn.disabled = !agree.checked);
+  showText(
+    h("p", {class:"eyebrow"}, "Nhóm 02 · Trực quan hóa dữ liệu · UEH"),
+    h("h1", {}, "Thử một bộ biểu đồ về thương mại của Việt Nam"),
+    PILOT ? h("div", {class:"msg"}, "Đây là lượt chạy thử (pilot). Kết quả được lưu riêng, không tính vào phân tích.") : null,
+    small ? h("div", {class:"msg err"}, "Màn hình của bạn hơi nhỏ. Bạn vui lòng làm trên máy tính xách tay hoặc máy bàn có chuột hoặc bàn di.") : null,
+    h("p", {}, "Nhóm đang kiểm tra xem bộ biểu đồ và công cụ tra cứu có dễ hiểu, dễ dùng không. Bài thử đánh giá biểu đồ, không đánh giá bạn; không có câu trả lời nào làm bạn bị điểm kém."),
+    h("div", {class:"info"},
+      h("div", {}, h("b", {}, "Thời lượng"), h("span", {}, "Khoảng 20 đến 25 phút, làm một lần, một mình.")),
+      h("div", {}, h("b", {}, "Bạn sẽ làm"), h("span", {}, "Xem một biểu đồ trong 5 giây; làm 4 nhiệm vụ tra cứu ngắn (mỗi nhiệm vụ tối đa 3 phút); trả lời 1 câu hỏi chọn lựa và 3 câu hỏi cuối.")),
+      h("div", {}, h("b", {}, "Nhóm ghi lại"), h("span", {}, "Câu trả lời, số giây làm mỗi nhiệm vụ, bạn có bấm xem gợi ý không, số lần bạn rời khỏi trang. Nhóm không ghi tên thật, không ghi âm, không quay phim.")),
+      h("div", {}, h("b", {}, "Sử dụng kết quả"), h("span", {}, "Chỉ dùng cho đồ án môn học; báo cáo theo mã (U1, U2…), không có thông tin nhận dạng bạn.")),
+      h("div", {}, h("b", {}, "Quyền dừng"), h("span", {}, "Bạn có thể dừng bất cứ lúc nào bằng nút “Dừng” ở góc màn hình; khi đó câu trả lời của bạn không được lưu."))),
+    h("label", {class:"check"}, agree, h("span", {}, "Tôi đã đọc các thông tin trên và đồng ý tham gia.")),
+    h("div", {class:"row"}, btn));
+}
+
+function radioGroup(name, opts){
+  return h("div", {class:"radio"}, opts.map(([v,t]) => h("label", {}, h("input", {type:"radio", name, value:v}), h("span", {}, t))));
+}
+const val = name => (document.querySelector(`input[name="${name}"]:checked`) || {}).value || "";
+
+function screenScreening(){
+  const btn = h("button", {class:"btn", disabled:true}, "Tiếp tục");
+  const box = h("div", {style:"display:flex;flex-direction:column;gap:16px"},
+    h("div", {class:"field"}, h("span", {}, "1. Công việc hiện tại của bạn gần nhất với"),
+      radioGroup("user_type", [["kinh_doanh","Làm kinh doanh (chủ doanh nghiệp, quản lý, nhân viên kinh doanh, xuất nhập khẩu)"],["sinh_vien","Sinh viên"],["khac","Khác"]])),
+    h("div", {class:"field"}, h("span", {}, "2. Trước hôm nay, bạn đã xem biểu đồ hay dữ liệu thương mại của Nhóm 02 chưa?"),
+      radioGroup("seen", [["khong","Chưa"],["co","Rồi"]])),
+    h("div", {class:"field"}, h("span", {}, "3. Bạn đã từng làm bài thử nào khác của Nhóm 02 chưa (thí nghiệm quả địa cầu và ma trận, thử hình động các đối tác, nghe câu Big Idea)?"),
+      radioGroup("tested", [["khong","Chưa"],["co","Rồi"]])));
+  box.addEventListener("change", () => btn.disabled = !(val("user_type") && val("seen") && val("tested")));
+  btn.addEventListener("click", () => {
+    S.user_type = val("user_type"); S.seen = val("seen"); S.tested = val("tested");
+    if (S.seen === "co" || S.tested === "co") return screenIneligible();
+    begin();
+  });
+  showText(h("p", {class:"eyebrow"}, "Trước khi bắt đầu"), h("h2", {}, "Ba câu hỏi ngắn về bạn"), box, h("div", {class:"row"}, btn));
+}
+
+function meta(eligible){
+  return {mode:S.mode, user_type:S.user_type, seen_group_charts:S.seen, did_other_test:S.tested, eligible,
+          screen:`${screen.width}x${screen.height}`, viewport:`${innerWidth}x${innerHeight}`, user_agent:navigator.userAgent, app_version:APP_VERSION};
+}
+
+function screenIneligible(){
+  if (ONLINE) call("logIneligible", meta("khong")).catch(() => {});
+  showText(h("h2", {}, "Cảm ơn bạn!"),
+    h("p", {}, "Bài thử này cần người chưa xem biểu đồ của nhóm và chưa làm bài thử nào khác, để kết quả không bị ảnh hưởng. Bạn không cần làm tiếp. Cảm ơn bạn đã dành thời gian."));
+}
+
+function begin(){
+  const go = info => { S.code = info.participant; S.started = new Date(); store.set("m10_done", "1"); screenGuide(); };
+  if (!ONLINE){ go({participant: "THU-" + Math.random().toString(36).slice(2,6).toUpperCase()}); return; }
+  showText(h("p", {}, "Đang tạo mã người thử…"));
+  call("startSession", meta("co")).then(go).catch(err => showText(
+    h("div", {class:"msg err"}, "Không kết nối được máy chủ lưu kết quả: " + err.message),
+    h("p", {}, "Bạn vui lòng tải lại trang và thử lại. Nếu vẫn lỗi, báo cho người đã gửi link."),
+    h("div", {class:"row"}, h("button", {class:"btn", onclick:() => location.reload()}, "Tải lại"))));
+}
+
+function stopLink(){
+  return h("button", {class:"linkbtn small", onclick:() => {
+    if (!confirmStop()) return;
+    if (ONLINE && S.code) call("withdraw", S.code).catch(() => {});
+    showText(h("h2", {}, "Bạn đã dừng"), h("p", {}, "Câu trả lời của bạn không được lưu. Cảm ơn bạn đã dành thời gian."));
+  }}, "Dừng");
+}
+/* Không dùng hộp thoại confirm() của trình duyệt: hiện nút xác nhận ngay trên trang. */
+let STOP_ARMED = false;
+function confirmStop(){
+  if (STOP_ARMED) return true;
+  STOP_ARMED = true; setTimeout(() => STOP_ARMED = false, 4000);
+  const n = h("div", {class:"msg err", style:"position:fixed;top:12px;right:12px;z-index:20;max-width:320px"}, "Bấm “Dừng” thêm một lần nữa trong 4 giây để dừng hẳn.");
+  document.body.appendChild(n); setTimeout(() => n.remove(), 4000);
+  return false;
+}
+
+function screenGuide(){
+  showText(progress(1, 7),
+    h("h2", {}, "Cách làm"),
+    h("ol", {class:"tight"},
+      h("li", {}, "Đầu tiên, một biểu đồ hiện trong đúng 5 giây rồi biến mất. Sau đó bạn ghi lại bạn nhớ được gì."),
+      h("li", {}, "Tiếp theo là 4 nhiệm vụ. Bên trái là trang hoặc công cụ, bên phải là câu hỏi. Mỗi nhiệm vụ tối đa 3 phút; hết giờ trang tự chuyển sang nhiệm vụ sau."),
+      h("li", {}, "Nếu bí, sau 1 phút bạn có thể bấm “Xem gợi ý” (mỗi nhiệm vụ một gợi ý). Hãy thử tự làm trước."),
+      h("li", {}, "Cuối cùng là 1 câu hỏi chọn lựa và 3 câu hỏi về cảm nhận của bạn.")),
+    h("div", {class:"msg"}, "Bạn vui lòng không mở tab khác và không tra cứu bên ngoài trong lúc làm."),
+    h("div", {class:"row", style:"justify-content:space-between"}, h("button", {class:"btn", onclick:screenFlashIntro}, "Bắt đầu phần 5 giây"), stopLink()));
+}
+
+/* ============ 2. Bài 5 giây ============ */
+function screenFlashIntro(){
+  const img = $("#flashimg"); img.src = FILES.c3;
+  const btn = h("button", {class:"btn", disabled:true}, "Đang tải hình…");
+  const ready = () => { btn.disabled = false; btn.textContent = "Xem hình (5 giây)"; };
+  if (img.complete && img.naturalWidth) ready(); else img.onload = ready;
+  btn.addEventListener("click", () => {
+    $("#flash").classList.add("on");
+    setTimeout(() => { $("#flash").classList.remove("on"); screenFlashAnswer(); }, FLASH_MS);
+  });
+  showText(progress(2, 7), h("h2", {}, "Bài 5 giây"),
+    h("p", {}, "Bấm nút bên dưới. Một biểu đồ sẽ hiện toàn màn hình trong đúng 5 giây rồi biến mất. Bạn chỉ cần nhìn, chưa cần làm gì."),
+    h("div", {class:"row"}, btn));
+}
+function screenFlashAnswer(){
+  const t0 = performance.now();
+  const ta = h("textarea", {placeholder:"Viết bằng lời của bạn, ngắn cũng được."});
+  const btn = h("button", {class:"btn", disabled:true}, "Tiếp tục");
+  ta.addEventListener("input", () => btn.disabled = ta.value.trim().length < 2);
+  btn.addEventListener("click", () => {
+    S.rows.push(row("F5", {answer_text: ta.value.trim(), seconds: ((performance.now() - t0) / 1000).toFixed(1)}));
+    runTask(0);
+  });
+  showText(progress(2, 7), h("h2", {}, "Biểu đồ vừa rồi nói gì? Ý chính là gì?"), ta, h("div", {class:"row"}, btn));
+}
+
+/* ============ 3. Bốn nhiệm vụ ============ */
+function row(task_id, extra){
+  return Object.assign({user_id:S.code, mode:S.mode, user_type:S.user_type, task_id, answer_country:"", answer_country_other:"",
+    answer_section:"", answer_number:"", answer_choice:"", answer_reason:"", answer_text:"", method:"", difficulty:"",
+    hints:0, hint_at_s:"", seconds:"", load_s:"", timed_out:0, skipped:0, left_page:0, charts_used:"", app_version:APP_VERSION}, extra);
+}
+
+function frame(kind){
+  if (kind === "c3") return h("div", {class:"imgwrap"}, h("img", {src:FILES.c3, alt:LEFT_LABEL.c3}));
+  return h("iframe", {src:FILES[kind] + "?t=" + Date.now(), title:LEFT_LABEL[kind]});
+}
+
+function countrySelect(id){
+  const other = h("input", {type:"text", id:id + "_other", placeholder:"Ghi tên nước", hidden:true});
+  const sel = h("select", {id}, h("option", {value:""}, "Chọn nước"), COUNTRY_OPTS.map(c => h("option", {value:c}, c)), h("option", {value:"khac"}, "Nước khác (ghi rõ)"));
+  sel.addEventListener("change", () => other.hidden = sel.value !== "khac");
+  return [sel, other];
+}
+function sectionSelect(id){
+  return h("select", {id}, h("option", {value:""}, "Chọn nhóm hàng"), SECTIONS.map(([c,n]) => h("option", {value:c}, `${c} · ${n}`)));
+}
+
+let TIMER = null;
+function runTask(i){
+  if (i >= TASKS.length) return runT5();
+  const T = TASKS[i];
+  $("#text").hidden = true; $("#task").classList.add("on"); $("#tabs").hidden = true;
+  const frames = $("#frames"); frames.replaceChildren(h("div", {id:"loading"}, "Đang tải…"));
+  const f = frame(T.left[0]); frames.appendChild(f);
+  const left0 = LEFT_PAGE;
+  let t0 = null, loadStart = performance.now(), hintAt = "", done = false;
+
+  const timer = h("span", {class:"timer"}, `0:00 / ${mmss(LIMIT)}`);
+  const hintBtn = h("button", {class:"btn ghost", disabled:true}, `Xem gợi ý (sau ${HINT_AFTER} giây)`);
+  const hintBox = h("div", {class:"hintbox", hidden:true}, "Gợi ý: " + T.hint);
+  hintBtn.addEventListener("click", () => { hintAt = (performance.now() - t0) / 1000; hintBox.hidden = false; hintBtn.disabled = true; hintBtn.textContent = "Đã xem gợi ý"; });
+
+  const inputs = [];
+  if (T.inputs.includes("country")) inputs.push(h("label", {class:"field"}, h("span", {}, "Nước"), ...countrySelect("c")));
+  if (T.inputs.includes("number")) inputs.push(h("label", {class:"field"}, h("span", {}, "Khoảng bao nhiêu phần trăm?"),
+    h("input", {type:"text", id:"num", inputmode:"decimal", placeholder:"Ví dụ: 12,5"})));
+  if (T.inputs.includes("section")) inputs.unshift(h("label", {class:"field"}, h("span", {}, "Nhóm hàng"), sectionSelect("sec")));
+  if (T.inputs.includes("choice")) inputs.push(h("div", {class:"field"}, h("span", {}, "Nhóm nào bán dồn vào ít thị trường hơn?"), radioGroup("choice", CHOICES_T3)));
+  if (T.inputs.includes("reason")) inputs.push(h("div", {class:"field"}, h("span", {}, "Bạn dựa vào đâu?"), radioGroup("reason", REASONS_T3),
+    h("input", {type:"text", id:"reason_other", placeholder:"Nếu chọn Khác, ghi rõ"})));
+  const method = h("div", {class:"field"}, h("span", {}, "Bạn ra câu trả lời bằng cách nào?"), radioGroup("method", METHODS));
+  const diff = h("label", {class:"field"}, h("span", {}, "Có chỗ nào làm bạn khó khăn hoặc mất thời gian không? (không bắt buộc)"), h("textarea", {id:"diff", style:"min-height:60px"}));
+  const ok = h("button", {class:"btn"}, "Xác nhận câu trả lời");
+  const skip = h("button", {class:"linkbtn small"}, "Tôi không tìm được, bỏ qua nhiệm vụ này");
+  const err = h("div", {class:"msg err", hidden:true});
+
+  $("#side").replaceChildren(
+    h("div", {class:"top"}, h("span", {class:"pill"}, S.code), h("span", {}, T.title), stopLink()),
+    h("div", {class:"q"}, T.q),
+    h("div", {class:"row small muted", style:"justify-content:space-between"}, h("span", {}, "Thời gian"), timer),
+    ...inputs, method, hintBtn, hintBox, diff,
+    h("div", {class:"confirm"}, err, ok, skip));
+
+  function collect(){
+    const g = id => (document.getElementById(id) || {}).value || "";
+    return {answer_country:g("c"), answer_country_other:g("c_other"), answer_section:g("sec"), answer_number:g("num").replace(/[%\s]/g, ""),
+            answer_choice:val("choice"), answer_reason: val("reason") + (g("reason_other") ? ": " + g("reason_other") : ""),
+            method:val("method"), difficulty:g("diff").trim()};
+  }
+  function valid(a){
+    if (T.inputs.includes("country") && !a.answer_country) return "Bạn chọn một nước.";
+    if (a.answer_country === "khac" && !a.answer_country_other.trim()) return "Bạn ghi tên nước.";
+    if (T.inputs.includes("number") && !/^\d{1,3}([.,]\d+)?$/.test(a.answer_number)) return "Bạn nhập một số phần trăm, ví dụ 12,5.";
+    if (T.inputs.includes("section") && !a.answer_section) return "Bạn chọn một nhóm hàng.";
+    if (T.inputs.includes("choice") && !a.answer_choice) return "Bạn chọn một nhóm.";
+    if (T.inputs.includes("reason") && !a.answer_reason) return "Bạn chọn điều bạn dựa vào.";
+    if (!a.method) return "Bạn cho biết bạn ra câu trả lời bằng cách nào.";
+    return "";
+  }
+  function finish(kind){
+    if (done) return; done = true; clearInterval(TIMER);
+    const sec = t0 === null ? 0 : (performance.now() - t0) / 1000;
+    S.rows.push(row(T.id, Object.assign(collect(), {hints: hintAt === "" ? 0 : 1, hint_at_s: hintAt === "" ? "" : hintAt.toFixed(1),
+      seconds: sec.toFixed(1), load_s: loadS, timed_out: kind === "timeout" ? 1 : 0, skipped: kind === "skip" ? 1 : 0, left_page: LEFT_PAGE - left0})));
+    if (kind === "timeout") showTimeout(i); else runTask(i + 1);
+  }
+  ok.addEventListener("click", () => { const m = valid(collect()); if (m){ err.textContent = m; err.hidden = false; return; } finish("ok"); });
+  skip.addEventListener("click", () => finish("skip"));
+
+  let loadS = "";
+  const start = () => {
+    if (t0 !== null || done) return;
+    loadS = ((performance.now() - loadStart) / 1000).toFixed(1);
+    const l = document.getElementById("loading"); if (l) l.remove();
+    t0 = performance.now();
+    TIMER = setInterval(() => {
+      const s = (performance.now() - t0) / 1000;
+      timer.textContent = `${mmss(s)} / ${mmss(LIMIT)}`;
+      timer.className = "timer" + (s >= LIMIT - 30 ? " warn" : "");
+      if (s >= HINT_AFTER && hintAt === "" && hintBtn.disabled && hintBtn.textContent.startsWith("Xem")){ hintBtn.disabled = false; hintBtn.textContent = "Xem gợi ý"; }
+      if (s >= LIMIT) finish("timeout");
+    }, 250);
+  };
+  f.addEventListener("load", start);
+  setTimeout(start, 20000);   // nếu sự kiện load không đến, vẫn bắt đầu đếm sau 20 giây
+}
+
+function showTimeout(i){
+  $("#side").replaceChildren(h("div", {class:"msg"}, "Hết 3 phút cho nhiệm vụ này. Không sao cả, mình chuyển sang phần tiếp theo."),
+    h("button", {class:"btn", onclick:() => runTask(i + 1)}, "Tiếp tục"));
+}
+
+/* ============ 4. Câu hỏi quyết định (T5) ============ */
+function runT5(){
+  $("#text").hidden = true; $("#task").classList.add("on");
+  const tabs = $("#tabs"); tabs.hidden = false;
+  const frames = $("#frames"); frames.replaceChildren();
+  const used = new Set(["scrolly"]);
+  const panes = {};
+  const show = k => {
+    used.add(k);
+    for (const [kk, p] of Object.entries(panes)) p.hidden = kk !== k;
+    if (!panes[k]){ panes[k] = frame(k); frames.appendChild(panes[k]); }
+    [...tabs.children].forEach(b => b.setAttribute("aria-pressed", b.dataset.k === k ? "true" : "false"));
+  };
+  tabs.replaceChildren(...T5.left.map(k => h("button", {"data-k":k, onclick:() => show(k)}, LEFT_LABEL[k])));
+  show("scrolly");
+
+  const t0 = performance.now(), left0 = LEFT_PAGE;
+  const timer = h("span", {class:"timer"}, "0:00");
+  TIMER = setInterval(() => {
+    const s = (performance.now() - t0) / 1000;
+    timer.textContent = mmss(s) + (s >= T5_SOFT ? " (bạn có thể kết thúc)" : "");
+  }, 500);
+  const charts = h("div", {class:"radio"}, T5.left.map(k => h("label", {}, h("input", {type:"checkbox", name:"chart", value:k}), h("span", {}, LEFT_LABEL[k]))));
+  const err = h("div", {class:"msg err", hidden:true});
+  const ok = h("button", {class:"btn"}, "Xác nhận");
+  $("#side").replaceChildren(
+    h("div", {class:"top"}, h("span", {class:"pill"}, S.code), h("span", {}, T5.title), stopLink()),
+    h("div", {class:"q"}, T5.q),
+    h("p", {class:"small muted"}, "Bấm các nút phía trên hình để chuyển giữa trang cuộn, công cụ tra cứu và biểu đồ. Câu này không có đáp án đúng."),
+    h("div", {class:"row small muted", style:"justify-content:space-between"}, h("span", {}, "Thời gian (gợi ý tối đa 5 phút)"), timer),
+    h("label", {class:"field"}, h("span", {}, "Nhóm hàng bạn chọn"), sectionSelect("sec")),
+    h("label", {class:"field"}, h("span", {}, "Thị trường bạn chọn"), ...countrySelect("c")),
+    h("label", {class:"field"}, h("span", {}, "Vì sao bạn chọn tổ hợp này? Bạn thấy điều gì trên hình?"),
+      h("textarea", {id:"why", placeholder:"Ghi mỗi ý một dòng, càng cụ thể càng tốt (ví dụ con số bạn đã thấy)."})),
+    h("div", {class:"field"}, h("span", {}, "Hình nào giúp bạn quyết định?"), charts),
+    h("div", {class:"confirm"}, err, ok));
+  ok.addEventListener("click", () => {
+    const sec = $("#sec").value, c = $("#c").value, why = $("#why").value.trim();
+    const ch = [...document.querySelectorAll('input[name="chart"]:checked')].map(x => x.value);
+    if (!sec || !c || why.length < 5 || !ch.length){ err.textContent = "Bạn chọn nhóm hàng, thị trường, ghi lý do và đánh dấu ít nhất một hình."; err.hidden = false; return; }
+    clearInterval(TIMER);
+    S.rows.push(row("T5", {answer_section:sec, answer_country:c, answer_country_other:($("#c_other")||{}).value || "", answer_text:why,
+      charts_used:ch.join(";"), seconds:((performance.now() - t0) / 1000).toFixed(1), left_page:LEFT_PAGE - left0,
+      method:"tabs_opened:" + [...used].join(";")}));
+    screenFinal();
+  });
+}
+
+/* ============ 5. Ba câu hỏi cuối và gửi ============ */
+function screenFinal(){
+  const qs = [["q1","Phần nào làm bạn mất thời gian hoặc khó hiểu nhất?"],
+              ["q2","Có con số hay biểu đồ nào bạn chưa tin hoặc chưa hiểu không?"],
+              ["q3","Nếu bạn là chủ doanh nghiệp đang chọn thị trường xuất khẩu, bạn có dùng công cụ này không? Bạn cần thêm gì?"]];
+  const btn = h("button", {class:"btn"}, "Gửi kết quả");
+  const msg = h("div", {class:"msg err", hidden:true});
+  showText(progress(7, 7), h("h2", {}, "Ba câu hỏi cuối"),
+    ...qs.map(([id, t], k) => h("label", {class:"field"}, h("span", {}, `${k + 1}. ${t}`), h("textarea", {id}))),
+    msg, h("div", {class:"row"}, btn));
+  btn.addEventListener("click", () => {
+    S.final = {final_q1:$("#q1").value.trim(), final_q2:$("#q2").value.trim(), final_q3:$("#q3").value.trim()};
+    if (!S.final.final_q1 || !S.final.final_q3){ msg.textContent = "Bạn trả lời câu 1 và câu 3 giúp nhóm (câu 2 có thể để trống nếu không có)."; msg.hidden = false; return; }
+    btn.disabled = true; btn.textContent = "Đang gửi…";
+    if (!ONLINE){ console.log("Chế độ thử, không lưu:", S); return screenThanks(true); }
+    call("saveSession", S.code, S.rows, S.final).then(() => screenThanks(false)).catch(e => {
+      btn.disabled = false; btn.textContent = "Gửi lại"; msg.textContent = "Chưa gửi được (" + e.message + "). Bạn kiểm tra mạng rồi bấm Gửi lại."; msg.hidden = false;
+    });
+  });
+}
+
+function screenThanks(offline){
+  const contact = h("input", {type:"text", placeholder:"Email hoặc số điện thoại (không bắt buộc)"});
+  const sent = h("div", {class:"msg ok", hidden:true}, "Đã lưu. Cảm ơn bạn!");
+  const btn = h("button", {class:"btn ghost"}, "Gửi liên hệ");
+  btn.addEventListener("click", () => {
+    if (!contact.value.trim() || offline) return;
+    btn.disabled = true; call("saveContact", contact.value.trim()).then(() => sent.hidden = false).catch(() => btn.disabled = false);
+  });
+  showText(h("h1", {}, "Cảm ơn bạn đã tham gia!"),
+    offline ? h("div", {class:"msg"}, "Trang đang ở chế độ thử nên kết quả không được lưu.") : h("div", {class:"msg ok"}, `Kết quả đã được lưu với mã ${S.code}.`),
+    h("p", {}, "Bạn vui lòng chưa kể nội dung câu hỏi cho bạn bè đến hết tuần, vì nhóm còn mời người khác làm."),
+    h("div", {class:"field"}, h("span", {class:"small"}, "Nếu đồng ý để giảng viên liên hệ xác minh bạn đã tham gia, bạn có thể để lại liên hệ. Liên hệ được lưu riêng, không gắn với câu trả lời."),
+      h("div", {class:"row"}, contact, btn)), sent);
+}
+
+screenIntro();
+</script>
+</body>
+</html>
