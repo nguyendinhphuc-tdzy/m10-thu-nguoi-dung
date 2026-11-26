@@ -153,7 +153,7 @@ document.addEventListener("visibilitychange", () => { if (document.hidden) LEFT_
 
 function showText(...nodes){
   $("#task").classList.remove("on"); $("#text").hidden = false;
-  const t = $("#text"); t.replaceChildren(...nodes); window.scrollTo(0,0);
+  const t = $("#text"); t.replaceChildren(...nodes.filter(n => n !== null && n !== undefined && n !== false)); window.scrollTo(0,0);
 }
 function progress(step, total){
   return h("div", {class:"row small muted", style:"justify-content:space-between"},

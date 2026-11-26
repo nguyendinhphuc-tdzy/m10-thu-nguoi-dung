@@ -1,11 +1,13 @@
 /**
  * Thử với người dùng M10 (P03 "Made in…?", Nhóm 02): bản người thử tự làm.
- * Gắn script này vào một Google Sheet của nhóm (Tiện ích mở rộng > Apps Script),
- * rồi Triển khai > Tùy chọn triển khai mới > Ứng dụng web: "Thực thi với tư cách: Tôi", "Ai có quyền truy cập: Bất kỳ ai".
+ * Dùng được theo 2 cách: dự án Apps Script riêng (điền SHEET_ID là mã Google Sheet lưu kết quả),
+ * hoặc gắn vào chính Sheet đó (Tiện ích mở rộng > Apps Script, để SHEET_ID trống). Sau đó Triển khai > Tùy chọn triển khai mới > Ứng dụng web: "Thực thi với tư cách: Tôi", "Ai có quyền truy cập: Bất kỳ ai".
  * Sheet tự tạo 3 trang tính: sessions (mỗi người một dòng), responses (mỗi nhiệm vụ một dòng), contacts (liên hệ, không gắn mã).
  * Trang không chứa đáp án; notebooks/M10/07_evaluation_M10.ipynb chấm từ trang tính responses.
  */
 const APP = "m10-tu-lam-1.0";
+/* Mã Google Sheet "M10_ket_qua_tu_lam" trong thư mục nhóm. Để trống nếu script gắn thẳng vào Sheet. */
+const SHEET_ID = "1Lpbam_YXJqjbnb-cUsGSzLyxQmdwicqw935v8q9jAU0";
 const SESS_COLS = ["user_id", "mode", "status", "started_at", "finished_at", "user_type", "seen_group_charts",
   "did_other_test", "eligible", "screen", "viewport", "user_agent", "app_version", "final_q1", "final_q2", "final_q3"];
 const RESP_COLS = ["user_id", "mode", "user_type", "task_id", "answer_country", "answer_country_other", "answer_section",
@@ -34,7 +36,7 @@ function doGet() {
 }
 
 function sheet_(name, header) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SHEET_ID ? SpreadsheetApp.openById(SHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName(name);
   if (!sh) {
     sh = ss.insertSheet(name);
